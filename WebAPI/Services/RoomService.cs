@@ -8,7 +8,13 @@ namespace WebAPI.Services
 {
     public class RoomService : IRoomService
     {
-        private IRoomRepository roomRepository = new RoomRepository();
+        private IRoomRepository roomRepository;
+
+
+        public RoomService(IRoomRepository roomRepository)
+        {
+            this.roomRepository = roomRepository;
+        }
 
         public Task<Room> GetRoomByIdAsync(int id)
         {
