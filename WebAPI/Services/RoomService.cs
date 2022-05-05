@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
@@ -16,14 +17,20 @@ namespace WebAPI.Services
             _roomRepository = roomRepository;
         }
 
-        public Task<Room> GetRoomByIdAsync(int id)
+        public async Task<Room> GetRoomByIdAsync(int id)
         {
-            return _roomRepository.GetRoomByIdAsync(id);
+            var room = await _roomRepository.GetRoomByIdAsync(id);
+            if (room == null)
+            {
+                throw new ArgumentException("Room was null");
+            }
+
+            return room;
         }
 
         public async Task<IEnumerable<Measurement>> GetMeasurementsByRoomIdAsync(int id)
         {
-            Room room = await _roomRepository.GetRoomByIdAsync(id);
+            var room = await GetRoomByIdAsync(id);
 
             IList<Measurement> measurements = room.ClimateDevices
                 .SelectMany(device => device.Measurements).ToList();
