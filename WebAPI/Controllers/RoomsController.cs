@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Repositories;
@@ -7,7 +10,7 @@ using WebAPI.Services;
 namespace WebAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v1/[controller]")]
     public class RoomsController : ControllerBase
     {
         private IRoomService roomService;
@@ -17,13 +20,17 @@ namespace WebAPI.Controllers
             this.roomService = roomService;
         }
 
-        [HttpGet]
+        [HttpGet("{roomId:int}/measurements")]
     
-        public async Task<ActionResult<IEnumerable<Measurement>>> GetMeasurmentByRoomId([FromQuery] int RoomId) {
+        public async Task<ActionResult<IEnumerable<Measurement>>> GetMeasurmentByRoomId([FromRoute] int roomId) {
             try
             {
-                IEnumerable<Measurement> measurements = await roomService.GetMeasurementsByRoomIdAsync(RoomId);
+                IEnumerable<Measurement> measurements = await roomService.GetMeasurementsByRoomIdAsync(roomId);
                 return Ok(measurements);
+            }
+            catch (ArgumentException e)
+            {
+                return NotFound(e.Message);
             }
             catch (Exception e)
             {

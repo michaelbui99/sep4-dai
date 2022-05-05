@@ -16,7 +16,7 @@ namespace WebAPI.Repositories
 
         public async Task<Room?> GetRoomByIdAsync(int id)
         {
-            return await _appDbContext.Rooms.Include(roomSettings => roomSettings.Settings)
+            return await _appDbContext.Rooms?.Include(roomSettings => roomSettings.Settings)
                 .Include(roomMe => roomMe.ClimateDevices).ThenInclude(device => device.Sensors)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Actuators)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Measurements)

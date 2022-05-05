@@ -17,7 +17,7 @@ namespace WebAPI.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(ConnectionStringGenerator.GetConnectionStringFromEnvironment());
+            optionsBuilder.UseSqlServer(ConnectionStringGenerator.GetConnectionStringFromDotEnv());
         }
     }
 }
