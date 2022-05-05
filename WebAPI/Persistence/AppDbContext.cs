@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using System;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Persistence
@@ -16,7 +17,7 @@ namespace WebAPI.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(ConnectionStringGenerator.GetConnectionStringFromDotEnv());
+            optionsBuilder.UseSqlServer(ConnectionStringGenerator.GetConnectionStringFromEnvironment());
         }
     }
 }

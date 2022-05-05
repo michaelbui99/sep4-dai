@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-DotNetEnv.Env.Load();
+
+// DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
