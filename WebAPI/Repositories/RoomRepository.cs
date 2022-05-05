@@ -1,11 +1,22 @@
 ﻿using Domain;
+using WebAPI.Persistence;
 
-namespace WebAPI.Repositories;
-
-public class RoomRepository : IRoomRepository
+namespace WebAPI.Repositories
 {
-    public Task<Room> GetRoomByIdAsync(int id)
+    public class RoomRepository : IRoomRepository
     {
-        throw new NotImplementedException();
+        private AppDbContext _appDbContext;
+
+        public RoomRepository(AppDbContext appDbContext)
+        {
+            _appDbContext = appDbContext;
+        }
+    
+        public Task<Room> GetRoomByIdAsync(int id)
+        {
+            return null;
+            //var room = _appDbContext;
+        }
     }
 }
+
