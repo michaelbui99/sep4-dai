@@ -1,6 +1,6 @@
-﻿namespace WebAPI.Controllers;
-
-public class RoomsController
+﻿namespace WebAPI.Controllers
 {
-    
+    public class RoomsController
+    {
+    }
 }

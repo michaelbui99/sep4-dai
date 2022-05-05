@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Domain;
-
-public class Sensor
+namespace Domain
 {
-    [Key]
-    public int SensorId { get; set; }
+    public class Sensor
+    {
+        [Key]
+        public int SensorId { get; set; }
+    }
 }

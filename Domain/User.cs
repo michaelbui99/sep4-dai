@@ -1,6 +1,7 @@
-﻿namespace Domain;
-
-public class User
+﻿namespace Domain
 {
-    public int UserId { get; set; }
+    public class User
+    {
+        public int UserId { get; set; }
+    }
 }
