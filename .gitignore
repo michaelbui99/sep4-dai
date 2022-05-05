@@ -457,3 +457,9 @@ $RECYCLE.BIN/
 ## Environment Secrets
 ##
 .env
+
+
+##
+## Build
+##
+out
