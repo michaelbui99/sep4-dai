@@ -8,7 +8,7 @@ namespace WebAPI.Services
 {
     public class RoomService : IRoomService
     {
-        private IRoomRepository roomRepository;
+        private readonly IRoomRepository roomRepository;
 
 
         public RoomService(IRoomRepository roomRepository)
@@ -24,15 +24,9 @@ namespace WebAPI.Services
         public async Task<IEnumerable<Measurement>> GetMeasurementsByRoomIdAsync(int id)
         {
             Room room = await roomRepository.GetRoomByIdAsync(id);
-            IList<Measurement> measurements = new List<Measurement>();
 
-            foreach (var device in room.ClimateDevices)
-            {
-                foreach (var measurement in device.Measurements)
-                {
-                    measurements.Add(measurement);
-                }
-            }
+            IList<Measurement> measurements = room.ClimateDevices.SelectMany(device => device.Measurements).ToList();
+
             return measurements.AsEnumerable();
         }
     }
