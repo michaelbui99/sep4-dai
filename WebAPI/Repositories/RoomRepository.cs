@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Microsoft.EntityFrameworkCore;
 using WebAPI.Persistence;
 
 namespace WebAPI.Repositories
@@ -11,12 +12,15 @@ namespace WebAPI.Repositories
         {
             _appDbContext = appDbContext;
         }
-    
-        public Task<Room> GetRoomByIdAsync(int id)
+
+        public async Task<Room?> GetRoomByIdAsync(int id)
         {
-            return null;
-            //var room = _appDbContext;
+            return await _appDbContext.Rooms.Include(roomSettings => roomSettings.Settings)
+                .Include(roomMe => roomMe.ClimateDevices).ThenInclude(device => device.Sensors)
+                .Include(room => room.ClimateDevices).ThenInclude(device => device.Actuators)
+                .Include(room => room.ClimateDevices).ThenInclude(device => device.Measurements)
+                .Include(room => room.ClimateDevices).ThenInclude(device => device.Settings)
+                .FirstOrDefaultAsync(room => room.RoomId == id);
         }
     }
 }
-

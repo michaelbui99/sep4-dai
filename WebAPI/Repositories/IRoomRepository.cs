@@ -5,6 +5,6 @@ namespace WebAPI.Repositories
 {
     public interface IRoomRepository
     {
-        Task<Room> GetRoomByIdAsync(int id);
+        Task<Room?> GetRoomByIdAsync(int id);
     }
 }
