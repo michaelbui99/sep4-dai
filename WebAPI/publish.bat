@@ -1,0 +1,1 @@
+dotnet publish ./WebAPI.csproj -c Release -o out
