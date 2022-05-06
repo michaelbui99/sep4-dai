@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -27,9 +29,10 @@ namespace WebAPI.Repositories
 
         public async Task AddMeasurements(int deviceId, IEnumerable<Measurement> measurements)
         {
-            var dev = await _appDbContext.ClimateDevices?.FirstOrDefaultAsync(device =>
+            var device = await _appDbContext.ClimateDevices?.FirstOrDefaultAsync(device =>
                 device.ClimateDeviceId == deviceId);
-            dev.Measurements.ToList().AddRange(measurements);
+            device.Measurements.ToList().AddRange(measurements);
+            await _appDbContext.SaveChangesAsync();
         }
     }
 }
