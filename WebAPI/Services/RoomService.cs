@@ -37,5 +37,10 @@ namespace WebAPI.Services
 
             return measurements.AsEnumerable();
         }
+
+        public async Task AddMeasurements(int deviceId, IEnumerable<Measurement> measurements)
+        {
+            await _roomRepository.AddMeasurements(deviceId, measurements);
+        }
     }
 }

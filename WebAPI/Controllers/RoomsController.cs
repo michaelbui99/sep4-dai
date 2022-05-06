@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.DTO;
 using WebAPI.Repositories;
 using WebAPI.Services;
 
@@ -21,8 +22,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{roomId:int}/measurements")]
-    
-        public async Task<ActionResult<IEnumerable<Measurement>>> GetMeasurmentByRoomId([FromRoute] int roomId) {
+        public async Task<ActionResult<IEnumerable<Measurement>>> GetMeasurmentByRoomId([FromRoute] int roomId)
+        {
             try
             {
                 IEnumerable<Measurement> measurements = await roomService.GetMeasurementsByRoomIdAsync(roomId);
@@ -38,8 +39,20 @@ namespace WebAPI.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-    }
-    
-    
 
+        [HttpPost("{roomId:int}/measurements")]
+        public async Task<ActionResult<IEnumerable<Measurement>>> AddMeasurements([FromRoute] int roomId, [FromBody] PostMeasurmentsDTO measurments)
+        {
+            try
+            {
+                await roomService.AddMeasurements(roomId, measurments.Measurements);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, e.Message);
+            }
+        }
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using WebAPI.Persistence;
 
 namespace WebAPI.Repositories
@@ -22,6 +23,13 @@ namespace WebAPI.Repositories
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Measurements)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Settings)
                 .FirstOrDefaultAsync(room => room.RoomId == id);
+        }
+
+        public async Task AddMeasurements(int deviceId, IEnumerable<Measurement> measurements)
+        {
+            var dev = await _appDbContext.ClimateDevices?.FirstOrDefaultAsync(device =>
+                device.ClimateDeviceId == deviceId);
+            dev.Measurements.ToList().AddRange(measurements);
         }
     }
 }

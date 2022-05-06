@@ -8,5 +8,7 @@ namespace WebAPI.Services
     {
         Task<Room> GetRoomByIdAsync(int id);
         Task<IEnumerable<Measurement>> GetMeasurementsByRoomIdAsync(int id);
+        Task AddMeasurements(int deviceId, IEnumerable<Measurement> measurements);
+
     }
 }
