@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using System.Collections.Generic;
+using Domain;
 
 namespace WebAPI.DTO;
 
