@@ -7,6 +7,6 @@ namespace WebAPI.Repositories
     public interface IRoomRepository
     {
         Task<Room?> GetRoomByIdAsync(int id);
-        Task AddMeasurements(int deviceId, IEnumerable<Measurement> measurements);
+        Task AddMeasurements(int deviceId, int roomId, IEnumerable<Measurement> measurements);
     }
 }

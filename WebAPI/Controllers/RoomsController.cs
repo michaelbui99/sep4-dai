@@ -41,11 +41,12 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("{roomId:int}/measurements")]
-        public async Task<ActionResult<IEnumerable<Measurement>>> AddMeasurements([FromRoute] int roomId, [FromBody] PostMeasurmentsDTO measurments)
+        public async Task<ActionResult> AddMeasurements([FromRoute] int roomId,
+            [FromBody] PostMeasurmentsDTO measurments)
         {
             try
             {
-                await roomService.AddMeasurements(roomId, measurments.Measurements);
+                await roomService.AddMeasurements(measurments.DeviceId, roomId, measurments.Measurements);
                 return Ok();
             }
             catch (Exception e)

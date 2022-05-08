@@ -27,12 +27,17 @@ namespace WebAPI.Repositories
                 .FirstOrDefaultAsync(room => room.RoomId == id);
         }
 
-        public async Task AddMeasurements(int deviceId, IEnumerable<Measurement> measurements)
+        public async Task AddMeasurements(int deviceId, int roomId, IEnumerable<Measurement> measurements)
         {
-            var device = await _appDbContext.ClimateDevices?.FirstOrDefaultAsync(device =>
-                device.ClimateDeviceId == deviceId);
-            device.Measurements.ToList().AddRange(measurements);
-            await _appDbContext.SaveChangesAsync();
+            _appDbContext.Measurements.AddRange(measurements);
+            // var device = _appDbContext.ClimateDevices.Include(device => device.Measurements)
+            //     .FirstOrDefault(climateDevice => climateDevice.ClimateDeviceId == deviceId);
+            // foreach (var measurement in measurements)
+            // {
+            //     device.Measurements.Append(measurement);
+            // }
+
+            _appDbContext.SaveChanges();
         }
     }
 }
