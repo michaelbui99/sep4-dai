@@ -19,18 +19,18 @@ jobs:
 
         steps:
             - name: Checkout repo
-            - uses: actions/checkout@v3
+              uses: actions/checkout@v3
 
             - name: Setup dotnet
-            - uses: actions/setup-dotnet@v2
+              uses: actions/setup-dotnet@v2
               with:
                   dotnet-version: "6.0.x"
 
             - name: Create dotnet deployment folder
-            - run: dotnet publish ./WebAPI/WebAPI.csproj -c Release -o out
+              run: dotnet publish ./WebAPI/WebAPI.csproj -c Release -o out
 
             - name: Upload deployment folder
-            - uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v3
               with:
                   name: sep4-deploy
                   path: ./WebAPI/out
@@ -42,16 +42,16 @@ jobs:
 
         steps:
             - name: Checkout repo
-            - uses: actions/checkout@v3
+              uses: actions/checkout@v3
 
             - name: Download deployment folder
-            - uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v2
               id: Download
               with:
                   name: sep4-deploy
 
             - name: Generate deployment folder
-            - run: zip -r deploy.zip ./sep4-deploy
+              run: zip -r deploy.zip ./sep4-deploy
 
             - name: Deploy to AWS Elastic Beanstalk
               uses: einaregilsson/beanstalk-deploy@v16
