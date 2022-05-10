@@ -61,15 +61,15 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost("{roomId:int}/measurements")]
-        public async Task<ActionResult> AddMeasurements([FromRoute] int roomId,
+        [HttpPost("{roomName}/measurements")]
+        public async Task<ActionResult> AddMeasurements([FromRoute] string roomName, 
             [FromBody]
             PostMeasurmentsDTO measurements)
         {
             try
             {
                 Console.WriteLine($"Received: {JsonSerializer.Serialize(measurements)}");
-                await roomService.AddMeasurements(measurements.DeviceId, roomId, measurements.Measurements);
+                await roomService.AddMeasurements(measurements.DeviceId, roomName, measurements.Measurements);
                 return Ok();
             }
             catch (ArgumentException e)

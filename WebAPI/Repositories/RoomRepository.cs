@@ -38,7 +38,7 @@ namespace WebAPI.Repositories
                 .FirstOrDefaultAsync(room => room.RoomName== roomName);
         }
 
-        public async Task AddMeasurements(string deviceId, int roomId, IEnumerable<Measurement> measurements)
+        public async Task AddMeasurements(string deviceId, IEnumerable<Measurement> measurements)
         {
             using (SqlConnection connection =
                    new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironment()))

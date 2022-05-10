@@ -49,13 +49,13 @@ namespace WebAPI.Services
             return await _measurementRepository.GetByRoomNameAsync(roomName);
         }
 
-        public async Task AddMeasurements(string deviceId, int roomId, IEnumerable<Measurement> measurements)
+        public async Task AddMeasurements(string deviceId, string roomName, IEnumerable<Measurement> measurements)
         {
-            var existingRoom = await _roomRepository.GetRoomByIdAsync(roomId);
+            var existingRoom = await _roomRepository.GetRoomByName(roomName);
 
-            if (!(await RoomExists(roomId)))
+            if (!(await RoomExists(roomName)))
             {
-                throw new ArgumentException($"No room with id: {roomId} exists");
+                throw new ArgumentException($"No room with id: {roomName} exists");
             }
 
             if (!ClimateDeviceExists(existingRoom, deviceId))
@@ -63,7 +63,7 @@ namespace WebAPI.Services
                 throw new ArgumentException($"No device with id: {deviceId} exists");
             }
 
-            await _roomRepository.AddMeasurements(deviceId, roomId, measurements);
+            await _roomRepository.AddMeasurements(deviceId, measurements);
         }
 
         private bool ClimateDeviceExists(Room room, string deviceId)
