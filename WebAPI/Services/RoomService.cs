@@ -36,7 +36,17 @@ namespace WebAPI.Services
                 throw new ArgumentException($"No room with id: {id} exists");
             }
 
-            return await _measurementRepository.GetByIdAsync(id);
+            return await _measurementRepository.GetByRoomIdAsync(id);
+        }
+
+        public async Task<IEnumerable<Measurement>> GetMeasurementsByRoomNameAsync(string roomName)
+        {
+            if (!(await RoomExists(roomName)))
+            {
+                throw new ArgumentException($"No room with id: {roomName} exists");
+            }
+
+            return await _measurementRepository.GetByRoomNameAsync(roomName);
         }
 
         public async Task AddMeasurements(string deviceId, int roomId, IEnumerable<Measurement> measurements)
@@ -64,6 +74,17 @@ namespace WebAPI.Services
         private async Task<bool> RoomExists(int roomId)
         {
             var existingRoom = await _roomRepository.GetRoomByIdAsync(roomId);
+            if (existingRoom == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task<bool> RoomExists(string roomName)
+        {
+            var existingRoom = await _roomRepository.GetRoomByName(roomName);
             if (existingRoom == null)
             {
                 return false;

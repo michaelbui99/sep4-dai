@@ -41,6 +41,26 @@ namespace WebAPI.Controllers
             }
         }
 
+
+        [HttpGet("{roomName}/measurements")]
+        public async Task<ActionResult<IEnumerable<Measurement>>> GetMeasurmentByRoomName([FromRoute] string roomName)
+        {
+            try
+            {
+                IEnumerable<Measurement> measurements = await roomService.GetMeasurementsByRoomNameAsync(roomName);
+                return Ok(measurements);
+            }
+            catch (ArgumentException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpPost("{roomId:int}/measurements")]
         public async Task<ActionResult> AddMeasurements([FromRoute] int roomId,
             [FromBody]
