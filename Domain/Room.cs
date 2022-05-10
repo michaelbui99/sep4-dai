@@ -8,6 +8,8 @@ namespace Domain
         [Key]
         public int RoomId { get; set; }
 
+        [Required]
+        public string RoomName { get; set; }
         public Settings? Settings { get; set; }
         public IEnumerable<ClimateDevice> ClimateDevices { get; set; } = new List<ClimateDevice>();
     }

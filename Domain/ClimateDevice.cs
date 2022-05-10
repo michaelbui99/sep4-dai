@@ -6,7 +6,7 @@ namespace Domain
     public class ClimateDevice
     {
         [Key]
-        public int ClimateDeviceId { get; set; }
+        public string ClimateDeviceId { get; set; }
 
         public IEnumerable<Sensor> Sensors { get; set; } = new List<Sensor>();
         public IEnumerable<Actuator> Actuators { get; set; } = new List<Actuator>();

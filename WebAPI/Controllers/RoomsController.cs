@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -42,12 +43,18 @@ namespace WebAPI.Controllers
 
         [HttpPost("{roomId:int}/measurements")]
         public async Task<ActionResult> AddMeasurements([FromRoute] int roomId,
-            [FromBody] PostMeasurmentsDTO measurments)
+            [FromBody]
+            PostMeasurmentsDTO measurements)
         {
             try
             {
-                await roomService.AddMeasurements(measurments.DeviceId, roomId, measurments.Measurements);
+                Console.WriteLine($"Received: {JsonSerializer.Serialize(measurements)}");
+                await roomService.AddMeasurements(measurements.DeviceId, roomId, measurements.Measurements);
                 return Ok();
+            }
+            catch (ArgumentException e)
+            {
+                return NotFound(e.Message);
             }
             catch (Exception e)
             {

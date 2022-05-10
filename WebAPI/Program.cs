@@ -6,7 +6,7 @@ using WebAPI.Repositories;
 using WebAPI.Services;
 
 
-// DotNetEnv.Env.Load();
+DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 

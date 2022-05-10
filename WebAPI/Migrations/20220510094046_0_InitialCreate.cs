@@ -30,7 +30,8 @@ namespace WebAPI.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,6 +44,7 @@ namespace WebAPI.Migrations
                 {
                     RoomId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    RoomName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SettingsSettingId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -56,45 +58,44 @@ namespace WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClimateDevices",
+                name: "ClimateDevice",
                 columns: table => new
                 {
-                    ClimateDeviceId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClimateDeviceId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SettingsSettingId = table.Column<int>(type: "int", nullable: true),
                     RoomId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClimateDevices", x => x.ClimateDeviceId);
+                    table.PrimaryKey("PK_ClimateDevice", x => x.ClimateDeviceId);
                     table.ForeignKey(
-                        name: "FK_ClimateDevices_Rooms_RoomId",
+                        name: "FK_ClimateDevice_Rooms_RoomId",
                         column: x => x.RoomId,
                         principalTable: "Rooms",
                         principalColumn: "RoomId");
                     table.ForeignKey(
-                        name: "FK_ClimateDevices_Settings_SettingsSettingId",
+                        name: "FK_ClimateDevice_Settings_SettingsSettingId",
                         column: x => x.SettingsSettingId,
                         principalTable: "Settings",
                         principalColumn: "SettingId");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Actuators",
+                name: "Actuator",
                 columns: table => new
                 {
                     ActuatorId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClimateDeviceId = table.Column<int>(type: "int", nullable: true)
+                    ClimateDeviceId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Actuators", x => x.ActuatorId);
+                    table.PrimaryKey("PK_Actuator", x => x.ActuatorId);
                     table.ForeignKey(
-                        name: "FK_Actuators_ClimateDevices_ClimateDeviceId",
+                        name: "FK_Actuator_ClimateDevice_ClimateDeviceId",
                         column: x => x.ClimateDeviceId,
-                        principalTable: "ClimateDevices",
+                        principalTable: "ClimateDevice",
                         principalColumn: "ClimateDeviceId");
                 });
 
@@ -108,49 +109,49 @@ namespace WebAPI.Migrations
                     Temperature = table.Column<float>(type: "real", nullable: false),
                     Humidity = table.Column<int>(type: "int", nullable: false),
                     Co2 = table.Column<int>(type: "int", nullable: false),
-                    ClimateDeviceId = table.Column<int>(type: "int", nullable: true)
+                    ClimateDeviceId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Measurements", x => x.MeasurementId);
                     table.ForeignKey(
-                        name: "FK_Measurements_ClimateDevices_ClimateDeviceId",
+                        name: "FK_Measurements_ClimateDevice_ClimateDeviceId",
                         column: x => x.ClimateDeviceId,
-                        principalTable: "ClimateDevices",
+                        principalTable: "ClimateDevice",
                         principalColumn: "ClimateDeviceId");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sensors",
+                name: "Sensor",
                 columns: table => new
                 {
                     SensorId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ClimateDeviceId = table.Column<int>(type: "int", nullable: true)
+                    ClimateDeviceId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sensors", x => x.SensorId);
+                    table.PrimaryKey("PK_Sensor", x => x.SensorId);
                     table.ForeignKey(
-                        name: "FK_Sensors_ClimateDevices_ClimateDeviceId",
+                        name: "FK_Sensor_ClimateDevice_ClimateDeviceId",
                         column: x => x.ClimateDeviceId,
-                        principalTable: "ClimateDevices",
+                        principalTable: "ClimateDevice",
                         principalColumn: "ClimateDeviceId");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Actuators_ClimateDeviceId",
-                table: "Actuators",
+                name: "IX_Actuator_ClimateDeviceId",
+                table: "Actuator",
                 column: "ClimateDeviceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClimateDevices_RoomId",
-                table: "ClimateDevices",
+                name: "IX_ClimateDevice_RoomId",
+                table: "ClimateDevice",
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClimateDevices_SettingsSettingId",
-                table: "ClimateDevices",
+                name: "IX_ClimateDevice_SettingsSettingId",
+                table: "ClimateDevice",
                 column: "SettingsSettingId");
 
             migrationBuilder.CreateIndex(
@@ -164,27 +165,27 @@ namespace WebAPI.Migrations
                 column: "SettingsSettingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sensors_ClimateDeviceId",
-                table: "Sensors",
+                name: "IX_Sensor_ClimateDeviceId",
+                table: "Sensor",
                 column: "ClimateDeviceId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Actuators");
+                name: "Actuator");
 
             migrationBuilder.DropTable(
                 name: "Measurements");
 
             migrationBuilder.DropTable(
-                name: "Sensors");
+                name: "Sensor");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "ClimateDevices");
+                name: "ClimateDevice");
 
             migrationBuilder.DropTable(
                 name: "Rooms");

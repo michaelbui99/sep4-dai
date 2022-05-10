@@ -12,8 +12,8 @@ using WebAPI.Persistence;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220505112008_01_AddKeyToUser")]
-    partial class _01_AddKeyToUser
+    [Migration("20220510094046_0_InitialCreate")]
+    partial class _0_InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,8 +32,8 @@ namespace WebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActuatorId"), 1L, 1);
 
-                    b.Property<int?>("ClimateDeviceId")
-                        .HasColumnType("int");
+                    b.Property<string>("ClimateDeviceId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
@@ -42,16 +42,13 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("ClimateDeviceId");
 
-                    b.ToTable("Actuators");
+                    b.ToTable("Actuator");
                 });
 
             modelBuilder.Entity("Domain.ClimateDevice", b =>
                 {
-                    b.Property<int>("ClimateDeviceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClimateDeviceId"), 1L, 1);
+                    b.Property<string>("ClimateDeviceId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("RoomId")
                         .HasColumnType("int");
@@ -65,7 +62,7 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("SettingsSettingId");
 
-                    b.ToTable("ClimateDevices");
+                    b.ToTable("ClimateDevice");
                 });
 
             modelBuilder.Entity("Domain.Measurement", b =>
@@ -76,8 +73,8 @@ namespace WebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MeasurementId"), 1L, 1);
 
-                    b.Property<int?>("ClimateDeviceId")
-                        .HasColumnType("int");
+                    b.Property<string>("ClimateDeviceId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Co2")
                         .HasColumnType("int");
@@ -106,6 +103,10 @@ namespace WebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoomId"), 1L, 1);
 
+                    b.Property<string>("RoomName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("SettingsSettingId")
                         .HasColumnType("int");
 
@@ -124,14 +125,14 @@ namespace WebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SensorId"), 1L, 1);
 
-                    b.Property<int?>("ClimateDeviceId")
-                        .HasColumnType("int");
+                    b.Property<string>("ClimateDeviceId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("SensorId");
 
                     b.HasIndex("ClimateDeviceId");
 
-                    b.ToTable("Sensors");
+                    b.ToTable("Sensor");
                 });
 
             modelBuilder.Entity("Domain.Settings", b =>
@@ -166,6 +167,10 @@ namespace WebAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
 

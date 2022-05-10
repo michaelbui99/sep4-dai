@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using WebAPI.Persistence;
@@ -27,17 +28,35 @@ namespace WebAPI.Repositories
                 .FirstOrDefaultAsync(room => room.RoomId == id);
         }
 
-        public async Task AddMeasurements(int deviceId, int roomId, IEnumerable<Measurement> measurements)
+        public async Task AddMeasurements(string deviceId, int roomId, IEnumerable<Measurement> measurements)
         {
-            _appDbContext.Measurements.AddRange(measurements);
-            // var device = _appDbContext.ClimateDevices.Include(device => device.Measurements)
-            //     .FirstOrDefault(climateDevice => climateDevice.ClimateDeviceId == deviceId);
-            // foreach (var measurement in measurements)
-            // {
-            //     device.Measurements.Append(measurement);
-            // }
+            using (SqlConnection connection =
+                   new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironment()))
+            {
+                string query =
+                    "INSERT INTO dbo.Measurements(Timestamp, Temperature, Humidity, Co2, ClimateDeviceId) " +
+                    "VALUES (@timestamp,@temperature,@humidity,@co2,@deviceId)";
+                connection.Open();
+                foreach (var measurement in measurements)
+                {
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@timestamp", measurement.Timestamp);
+                        command.Parameters.AddWithValue("@temperature", measurement.Temperature);
+                        command.Parameters.AddWithValue("@humidity", measurement.Humidity);
+                        command.Parameters.AddWithValue("@co2", measurement.Co2);
+                        command.Parameters.AddWithValue("@deviceId", deviceId);
 
-            _appDbContext.SaveChanges();
+                        int result = command.ExecuteNonQuery();
+
+                        if (result < 0)
+                        {
+                            throw new ArgumentException("Could not insert new query");
+                        }
+                    }
+                }
+                connection.Close();
+            }
         }
     }
 }
