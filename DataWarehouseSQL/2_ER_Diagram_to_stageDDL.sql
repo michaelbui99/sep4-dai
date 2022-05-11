@@ -1,4 +1,4 @@
-use sep4_source
+use sep4_dwh
 go
 
 CREATE TABLE stage.DimClimateDevice
