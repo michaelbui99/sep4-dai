@@ -11,5 +11,3 @@ EXEC('CREATE SCHEMA edw')
 go
 
 
-
-
