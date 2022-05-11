@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError("Failed to get measurements: {e}", e);
                 return StatusCode(500, e.Message);
             }
         }
@@ -59,7 +59,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError("Failed to get measurements: {e}", e);
                 return StatusCode(500, e.Message);
             }
         }
@@ -71,7 +71,8 @@ namespace WebAPI.Controllers
         {
             try
             {
-                _logger.LogInformation($"Received: {JsonSerializer.Serialize(measurements)}");
+                _logger.LogInformation(
+                    $"Received POST Request for /measurements: {JsonSerializer.Serialize(measurements)}");
                 await roomService.AddMeasurements(measurements.DeviceId, roomName, measurements.Measurements);
                 return Ok();
             }
@@ -81,7 +82,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError("Failed to create measurements: {e}", e);
                 return StatusCode(500, e.Message);
             }
         }
