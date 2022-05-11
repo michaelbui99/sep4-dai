@@ -33,7 +33,7 @@ jobs:
               uses: actions/upload-artifact@v3
               with:
                   name: sep4-deploy
-                  path: ./out
+                  path: ./sep4-dai/out
                   retention-days: 1
 
     deploy:
@@ -51,7 +51,7 @@ jobs:
                   name: sep4-deploy
 
             - name: Generate deployment folder
-              run: zip -r deploy.zip ./sep4-deploy
+              run: zip -r deploy.zip ./sep4-deploy/.*
 
             - name: Deploy to AWS Elastic Beanstalk
               uses: einaregilsson/beanstalk-deploy@v16
