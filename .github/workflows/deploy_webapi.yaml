@@ -33,7 +33,7 @@ jobs:
               uses: actions/upload-artifact@v3
               with:
                   name: sep4-deploy
-                  path: ./WebAPI/out
+                  path: ./out
                   retention-days: 1
 
     deploy:
