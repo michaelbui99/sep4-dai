@@ -26,14 +26,19 @@ jobs:
               with:
                   dotnet-version: "6.0.x"
 
+            - name: Install dependencies
+              working-directory: ./WebAPI
+              run: dotnet restore
+
             - name: Create dotnet deployment folder
-              run: dotnet publish ./WebAPI/WebAPI.csproj -c Release -o out
+              working-directory: ./WebAPI
+              run: dotnet publish WebAPI.csproj -c Release -o out
 
             - name: Upload deployment folder
               uses: actions/upload-artifact@v3
               with:
                   name: sep4-deploy
-                  path: ./sep4-dai/out
+                  path: WebAPI/out
                   retention-days: 1
 
     deploy:
@@ -51,7 +56,7 @@ jobs:
                   name: sep4-deploy
 
             - name: Generate deployment folder
-              run: zip -r deploy.zip ./sep4-deploy/.*
+              run: zip -r deploy.zip ./sep4-deploy/*
 
             - name: Deploy to AWS Elastic Beanstalk
               uses: einaregilsson/beanstalk-deploy@v16
