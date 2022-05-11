@@ -1,37 +1,40 @@
-CREATE TABLE Stage.DimClimateDevice
+use sep4_source
+go
+
+CREATE TABLE stage.DimClimateDevice
 (
-    ClimateDeviceId INT
+    ClimateDeviceId INT NOT NULL
 );
 
 
-ALTER TABLE Stage.DimClimateDevice
+ALTER TABLE stage.DimClimateDevice
     ADD CONSTRAINT PK_DimClimateDevice PRIMARY KEY (ClimateDeviceId);
 
 
-CREATE TABLE Stage.DimRoom
+CREATE TABLE stage.DimRoom
 (
-    RoomId   INT,
+    RoomId   INT NOT NULL,
     RoomName NVARCHAR(6)
 );
 
-ALTER TABLE Stage.DimRoom
+ALTER TABLE stage.DimRoom
     ADD CONSTRAINT PK_DimRoom PRIMARY KEY (RoomId);
 
 
-CREATE TABLE Stage.DimSettings
+CREATE TABLE stage.DimSettings
 (
-    SettingsId        INT,
+    SettingsId        INT NOT NULL,
     HumidityThreshold INT,
     TargetTemperature FLOAT,
     TemperatureMargin INT,
     CO2Threshold      INT
 );
 
-ALTER TABLE Stage.DimSettings
+ALTER TABLE stage.DimSettings
     ADD CONSTRAINT PK_DimSettings PRIMARY KEY (SettingsId);
 
 
-CREATE TABLE Stage.FactMeasurement
+CREATE TABLE stage.FactMeasurement
 (
     RoomId              INT NOT NULL,
     SettingsId          INT NOT NULL,
@@ -41,16 +44,16 @@ CREATE TABLE Stage.FactMeasurement
     Humidity_In_Percent INT
 );
 
-ALTER TABLE Stage.FactMeasurement
+ALTER TABLE stage.FactMeasurement
     ADD CONSTRAINT PK_FactMeasurement PRIMARY KEY (RoomId, SettingsId, ClimateDeviceId);
 
 
-ALTER TABLE Stage.FactMeasurement
-    ADD CONSTRAINT FK_FactMeasurement_0 FOREIGN KEY (RoomId) REFERENCES DimRoom (RoomId);
-ALTER TABLE Stage.FactMeasurement
-    ADD CONSTRAINT FK_FactMeasurement_1 FOREIGN KEY (SettingsId) REFERENCES DimSettings (SettingsId);
-ALTER TABLE Stage.FactMeasurement
-    ADD CONSTRAINT FK_FactMeasurement_2 FOREIGN KEY (ClimateDeviceId) REFERENCES DimClimateDevice (ClimateDeviceId);
+--ALTER TABLE Stage.FactMeasurement
+--    ADD CONSTRAINT FK_FactMeasurement_0 FOREIGN KEY (RoomId) REFERENCES DimRoom (RoomId);
+--ALTER TABLE Stage.FactMeasurement
+--    ADD CONSTRAINT FK_FactMeasurement_1 FOREIGN KEY (SettingsId) REFERENCES DimSettings (SettingsId);
+--ALTER TABLE Stage.FactMeasurement
+--    ADD CONSTRAINT FK_FactMeasurement_2 FOREIGN KEY (ClimateDeviceId) REFERENCES DimClimateDevice (ClimateDeviceId);
 
 
 
