@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using Domain;
 
-namespace WebAPI.DTO;
-
-public class PostMeasurmentsDTO
+namespace WebAPI.DTO
 {
-    public string DeviceId { get; set; }
-    public IList<Measurement> Measurements { get; set; } = new List<Measurement>();
+
+    public class PostMeasurmentsDTO
+    {
+        public string DeviceId { get; set; }
+        public IList<Measurement> Measurements { get; set; } = new List<Measurement>();
+    }
 }
