@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WebAPI.DTO;
 using WebAPI.Repositories;
 using WebAPI.Services;
@@ -16,10 +17,12 @@ namespace WebAPI.Controllers
     public class RoomsController : ControllerBase
     {
         private IRoomService roomService;
+        private readonly ILogger _logger;
 
-        public RoomsController(IRoomService roomService)
+        public RoomsController(IRoomService roomService, ILogger<RoomsController> logger)
         {
             this.roomService = roomService;
+            _logger = logger;
         }
 
         [HttpGet("{roomId:int}/measurements")]
@@ -62,13 +65,13 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("{roomName}/measurements")]
-        public async Task<ActionResult> AddMeasurements([FromRoute] string roomName, 
+        public async Task<ActionResult> AddMeasurements([FromRoute] string roomName,
             [FromBody]
             PostMeasurmentsDTO measurements)
         {
             try
             {
-                Console.WriteLine($"Received: {JsonSerializer.Serialize(measurements)}");
+                _logger.LogInformation($"Received: {JsonSerializer.Serialize(measurements)}");
                 await roomService.AddMeasurements(measurements.DeviceId, roomName, measurements.Measurements);
                 return Ok();
             }
