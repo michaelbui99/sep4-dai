@@ -27,8 +27,8 @@ jobs:
                   dotnet-version: "6.0.x"
 
             - name: Install dependencies
-              working-directory: ./WebAPI ./WebAPI.csproj
-              run: dotnet restore
+              working-directory: ./WebAPI
+              run: dotnet restore ./WebAPI.csproj
 
             - name: Create dotnet deployment folder
               working-directory: ./WebAPI
