@@ -14,7 +14,7 @@ env:
     AWS_REGION: eu-west-1
 
 jobs:
-    build:
+    publish:
         runs-on: ubuntu-latest
 
         steps:
@@ -26,32 +26,17 @@ jobs:
               with:
                   dotnet-version: "6.0.x"
 
+            - name: Install dependencies
+              working-directory: ./WebAPI
+              run: dotnet restore ./WebAPI.csproj
+
             - name: Create dotnet deployment folder
-              run: dotnet publish ./WebAPI/WebAPI.csproj -c Release -o out
-
-            - name: Upload deployment folder
-              uses: actions/upload-artifact@v3
-              with:
-                  name: sep4-deploy
-                  path: ./sep4-dai/out
-                  retention-days: 1
-
-    deploy:
-        runs-on: ubuntu-latest
-        needs: build
-
-        steps:
-            - name: Checkout repo
-              uses: actions/checkout@v3
-
-            - name: Download deployment folder
-              uses: actions/download-artifact@v2
-              id: Download
-              with:
-                  name: sep4-deploy
+              working-directory: ./WebAPI
+              run: dotnet publish WebAPI.csproj -c Release -o out
 
             - name: Generate deployment folder
-              run: zip -r deploy.zip ./sep4-deploy/.*
+              working-directory: WebAPI/out
+              run: zip -r ../../deploy.zip ./*
 
             - name: Deploy to AWS Elastic Beanstalk
               uses: einaregilsson/beanstalk-deploy@v16
