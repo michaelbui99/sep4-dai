@@ -9,6 +9,7 @@ namespace WebAPI.Persistence
         public DbSet<Room>? Rooms { get; set; }
         public DbSet<User>? Users { get; set; }
         public DbSet<Measurement>? Measurements { get; set; }
+        public DbSet<ClimateDevice>? Devices { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

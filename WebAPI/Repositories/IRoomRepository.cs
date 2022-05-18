@@ -8,6 +8,6 @@ namespace WebAPI.Repositories
     {
         Task<Room?> GetRoomByIdAsync(int id);
         Task<Room?> GetRoomByName(string roomName);
-        Task AddMeasurements(string deviceId, IEnumerable<Measurement> measurements);
+        
     }
 }

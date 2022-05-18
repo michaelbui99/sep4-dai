@@ -63,7 +63,7 @@ namespace WebAPI.Services
                 throw new ArgumentException($"No device with id: {deviceId} exists");
             }
 
-            await _roomRepository.AddMeasurements(deviceId, measurements);
+            await _measurementRepository.AddMeasurements(deviceId, measurements);
         }
 
         private bool ClimateDeviceExists(Room room, string deviceId)

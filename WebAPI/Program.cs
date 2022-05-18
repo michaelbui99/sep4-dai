@@ -21,6 +21,9 @@ builder.Services.AddDbContext<AppDbContext>(ServiceLifetime.Scoped);
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IMeasurementRepository, MeasurementRepository>();
+builder.Services.AddScoped<IMeasurementService, MeasurementService>();
+builder.Services.AddScoped<IDeviceService, DeviceService>();
+builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 
 var app = builder.Build();
 
