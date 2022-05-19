@@ -36,9 +36,9 @@ ALTER TABLE stage.DimSettings
 
 CREATE TABLE stage.FactMeasurement
 (
-    RoomId              nvarchar(50) NOT NULL,
+    RoomId              INT NOT NULL,
     SettingsId          INT NOT NULL,
-    ClimateDeviceId     INT NOT NULL,
+    ClimateDeviceId     nvarchar(50) NOT NULL,
     CO2_In_PPM          INT,
     Temperature_In_C    FLOAT,
     Humidity_In_Percent INT,
