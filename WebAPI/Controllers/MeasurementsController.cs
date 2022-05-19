@@ -1,7 +1,11 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Domain;
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WebAPI.DTO;
 using WebAPI.Services;
 
@@ -43,6 +47,4 @@ namespace WebAPI.Controllers
             }
         }
     }
-    
-    
 }
