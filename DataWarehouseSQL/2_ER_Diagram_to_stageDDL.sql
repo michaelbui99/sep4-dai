@@ -3,7 +3,7 @@ go
 
 CREATE TABLE stage.DimClimateDevice
 (
-    ClimateDeviceId INT NOT NULL
+    ClimateDeviceId NVARCHAR(50) NOT NULL
 );
 
 
