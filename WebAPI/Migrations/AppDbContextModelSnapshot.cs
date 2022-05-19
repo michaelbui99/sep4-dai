@@ -60,7 +60,7 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("SettingsSettingId");
 
-                    b.ToTable("ClimateDevice");
+                    b.ToTable("Devices");
                 });
 
             modelBuilder.Entity("Domain.Measurement", b =>

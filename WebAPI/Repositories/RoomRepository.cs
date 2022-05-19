@@ -39,35 +39,6 @@ namespace WebAPI.Repositories
                 .FirstOrDefaultAsync(room => room.RoomName== roomName);
         }
 
-        public async Task AddMeasurements(string deviceId, IEnumerable<Measurement> measurements)
-        {
-            using (SqlConnection connection =
-                   new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironment()))
-            {
-                string query =
-                    "INSERT INTO dbo.Measurements(Timestamp, Temperature, Humidity, Co2, ClimateDeviceId) " +
-                    "VALUES (@timestamp,@temperature,@humidity,@co2,@deviceId)";
-                connection.Open();
-                foreach (var measurement in measurements)
-                {
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@timestamp", measurement.Timestamp);
-                        command.Parameters.AddWithValue("@temperature", measurement.Temperature);
-                        command.Parameters.AddWithValue("@humidity", measurement.Humidity);
-                        command.Parameters.AddWithValue("@co2", measurement.Co2);
-                        command.Parameters.AddWithValue("@deviceId", deviceId);
-
-                        int result = command.ExecuteNonQuery();
-
-                        if (result < 0)
-                        {
-                            throw new ArgumentException("Could not insert new query");
-                        }
-                    }
-                }
-                connection.Close();
-            }
-        }
+      
     }
 }

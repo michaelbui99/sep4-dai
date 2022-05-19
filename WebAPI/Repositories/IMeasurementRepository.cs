@@ -10,5 +10,6 @@ namespace WebAPI.Repositories
         Task<IEnumerable<Measurement>> GetAllAsync();
         Task<IEnumerable<Measurement>> GetByRoomIdAsync(int roomId);
         Task<IEnumerable<Measurement>> GetByRoomNameAsync(string roomName);
+        Task AddMeasurements(string deviceId, IEnumerable<Measurement> measurements);
     }
 }
