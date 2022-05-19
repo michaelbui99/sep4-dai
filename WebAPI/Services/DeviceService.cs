@@ -1,43 +1,44 @@
-﻿using Domain;
+﻿using System;
+using System.Threading.Tasks;
+using Domain;
 using Domain.Exceptions;
 using WebAPI.Repositories;
+using WebAPI.Services;
 
-namespace WebAPI.Services;
-
-public class DeviceService : IDeviceService
+namespace WebAPI.Services
 {
-
-    private IDeviceRepository _deviceRepository;
-
-    public DeviceService(IDeviceRepository deviceRepository)
+    public class DeviceService : IDeviceService
     {
-        _deviceRepository = deviceRepository;
-    }
+        private IDeviceRepository _deviceRepository;
 
-    public async Task<ClimateDevice> GetDeviceById(string deviceId)
-    {
-        var climateDevice = await _deviceRepository.GetDeviceById(deviceId);
-        
-        if (climateDevice == null)
+        public DeviceService(IDeviceRepository deviceRepository)
         {
-            throw new ArgumentException($"No device with id: {deviceId} exists");
+            _deviceRepository = deviceRepository;
         }
 
-        return climateDevice;
-    }
+        public async Task<ClimateDevice> GetDeviceById(string deviceId)
+        {
+            var climateDevice = await _deviceRepository.GetDeviceById(deviceId);
 
-    public async Task AddNewDevice(ClimateDevice device)
-    {
-        try
-        {
-            await GetDeviceById(device.ClimateDeviceId);
-            throw new DeviceAlreadyExistsException($"Device with id: {device.ClimateDeviceId} exists");
+            if (climateDevice == null)
+            {
+                throw new ArgumentException($"No device with id: {deviceId} exists");
+            }
+
+            return climateDevice;
         }
-        catch (ArgumentException e)
+
+        public async Task AddNewDevice(ClimateDevice device)
         {
-            await _deviceRepository.AddNewDevice(device);
+            try
+            {
+                await GetDeviceById(device.ClimateDeviceId);
+                throw new DeviceAlreadyExistsException($"Device with id: {device.ClimateDeviceId} exists");
+            }
+            catch (ArgumentException e)
+            {
+                await _deviceRepository.AddNewDevice(device);
+            }
         }
-      
-        
     }
 }

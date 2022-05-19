@@ -1,9 +1,11 @@
-﻿using Domain;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Domain;
 
-namespace WebAPI.Services;
-
-public interface IMeasurementService
+namespace WebAPI.Services
 {
-    
-    Task AddMeasurements(string deviceId, IEnumerable<Measurement> measurements);
+    public interface IMeasurementService
+    {
+        Task AddMeasurements(string deviceId, IEnumerable<Measurement> measurements);
+    }
 }
