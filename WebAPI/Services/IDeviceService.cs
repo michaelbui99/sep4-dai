@@ -1,10 +1,12 @@
-﻿using Domain;
+﻿using System;
+using System.Threading.Tasks;
+using Domain;
 
-namespace WebAPI.Services;
-
-public interface IDeviceService
+namespace WebAPI.Services
 {
-    Task<ClimateDevice> GetDeviceById(String deviceId);
-    Task AddNewDevice(ClimateDevice device);
-
+    public interface IDeviceService
+    {
+        Task<ClimateDevice> GetDeviceById(String deviceId);
+        Task AddNewDevice(ClimateDevice device);
+    }
 }

@@ -1,46 +1,51 @@
-﻿using Domain;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Domain;
 using Domain.Exceptions;
 using WebAPI.Repositories;
+using WebAPI.Services;
 
-namespace WebAPI.Services;
-
-public class MeasurementService: IMeasurementService
+namespace WebAPI.Services
 {
-    private IMeasurementRepository _measurementRepository;
-    private IDeviceService _deviceService;
-
-    public MeasurementService(IMeasurementRepository measurementRepository, IDeviceService deviceService)
+    public class MeasurementService : IMeasurementService
     {
-        _measurementRepository = measurementRepository;
-        _deviceService = deviceService;
-    }
+        private IMeasurementRepository _measurementRepository;
+        private IDeviceService _deviceService;
 
-    public async Task AddMeasurements(string deviceId, IEnumerable<Measurement> measurements)
-    {
-        try
+        public MeasurementService(IMeasurementRepository measurementRepository, IDeviceService deviceService)
         {
-            await _deviceService.GetDeviceById(deviceId);
+            _measurementRepository = measurementRepository;
+            _deviceService = deviceService;
         }
-        catch (ArgumentException e)
+
+        public async Task AddMeasurements(string deviceId, IEnumerable<Measurement> measurements)
         {
             try
             {
-                Console.WriteLine("miaw");
-                await _deviceService.AddNewDevice(new ClimateDevice() {ClimateDeviceId = deviceId});
-                await _measurementRepository.AddMeasurements(deviceId, measurements);
-                return;
+                await _deviceService.GetDeviceById(deviceId);
             }
-            catch (DeviceAlreadyExistsException e1)
+            catch (ArgumentException e)
             {
-                Console.WriteLine(e1);
+                try
+                {
+                    Console.WriteLine("miaw");
+                    await _deviceService.AddNewDevice(new ClimateDevice() {ClimateDeviceId = deviceId});
+                    await _measurementRepository.AddMeasurements(deviceId, measurements);
+                    return;
+                }
+                catch (DeviceAlreadyExistsException e1)
+                {
+                    Console.WriteLine(e1);
+                }
             }
-            
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            await _measurementRepository.AddMeasurements(deviceId, measurements);
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        await _measurementRepository.AddMeasurements(deviceId, measurements);
     }
 }

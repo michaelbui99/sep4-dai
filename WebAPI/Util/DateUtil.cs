@@ -1,10 +1,13 @@
-﻿namespace WebAPI.Util;
+﻿using System;
 
-public class DateUtil
+namespace WebAPI.Util
 {
-    public static DateTime GetDateTimeFromUnixTimeSeconds(long unixTimeSeconds)
+    public class DateUtil
     {
-        var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(unixTimeSeconds);
-        return dateTimeOffset.DateTime;
+        public static DateTime GetDateTimeFromUnixTimeSeconds(long unixTimeSeconds)
+        {
+            var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(unixTimeSeconds);
+            return dateTimeOffset.DateTime;
+        }
     }
 }
