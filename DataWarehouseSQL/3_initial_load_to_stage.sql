@@ -56,9 +56,10 @@ SELECT r.[RoomId]
 	  ,[Co2]
       ,[Temperature]
       ,[Humidity]
-	  ,CAST([Timestamp] as time)  --Isolating time value from timestamp
-	  ,CAST([Timestamp] as date)  --Isolating date value from timestamp
+	  ,convert(char(8), [Timestamp], 108) [time]  --Isolating time value from timestamp
+	  ,CONVERT (date, [Timestamp] , 3) --Isolating date value from timestamp
 
   FROM [sep4_source].[dbo].[Measurements] m join [sep4_source].[dbo].[Devices] d on m.ClimateDeviceId = d.ClimateDeviceId
   join [sep4_source].[dbo].[Rooms] r on d.RoomId = r.RoomId join [sep4_source].[dbo].[Settings] s on d.SettingsSettingId = s.SettingId
 
+select * from stage.FactMeasurement

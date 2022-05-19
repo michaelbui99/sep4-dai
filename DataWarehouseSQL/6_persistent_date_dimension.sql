@@ -4,7 +4,7 @@ GO
 /****** Create Date Table if it does not exist ******/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[edw].[DimDate]') AND type in (N'U'))
 CREATE TABLE [edw].[DimDate](
-	[D_ID] [int] NOT NULL,
+	[D_ID] [int] PRIMARY KEY NOT NULL ,
 	[Date] [datetime] NOT NULL,
 	[Day] [int] NOT NULL,
 	[Month] [int] NOT NULL,
