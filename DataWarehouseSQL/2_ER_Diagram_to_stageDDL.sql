@@ -3,7 +3,7 @@ go
 
 CREATE TABLE stage.DimClimateDevice
 (
-    ClimateDeviceId INT NOT NULL
+    ClimateDeviceId NVARCHAR(50) NOT NULL
 );
 
 
@@ -38,14 +38,16 @@ CREATE TABLE stage.FactMeasurement
 (
     RoomId              INT NOT NULL,
     SettingsId          INT NOT NULL,
-    ClimateDeviceId     INT NOT NULL,
+    ClimateDeviceId     nvarchar(50) NOT NULL,
     CO2_In_PPM          INT,
     Temperature_In_C    FLOAT,
-    Humidity_In_Percent INT
+    Humidity_In_Percent INT,
+    Measurement_Time TIME NOT NULL,
+    Measurement_Date DATE NOT NULL 
 );
 
 ALTER TABLE stage.FactMeasurement
-    ADD CONSTRAINT PK_FactMeasurement PRIMARY KEY (RoomId, SettingsId, ClimateDeviceId);
+    ADD CONSTRAINT PK_FactMeasurement PRIMARY KEY (RoomId, SettingsId, ClimateDeviceId, Measurement_Time, Measurement_Date);
 
 
 --ALTER TABLE Stage.FactMeasurement
