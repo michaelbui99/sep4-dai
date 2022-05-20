@@ -1,41 +1,14 @@
-
-use [sep4_dwh]
+use sep4_dwh
 go
-/****** Load to stage ClimateDevice  ******/
-insert into [edw].[DimClimateDevice] 
-([ClimateDeviceId]
-)
-SELECT [ClimateDeviceId]
-  FROM sep4_dwh.stage.[DimClimateDevice]
 
+DECLARE @UpdatedTable varchar
+SET @UpdatedTable = 'FactMeasurement'
 
-  /******  Load to stage Room  ******/
-INSERT INTO [edw].[DimRoom]
-      ([RoomId],
-	   [RoomName])
-SELECT [RoomId]
-      ,[RoomName]
-  FROM sep4_dwh.stage.[DimRoom]
-      
-
-
-  /****** Load to stage Settings  ******/
-
-Insert into [edw].[DimSettings]
-      ([SettingsId]
-      ,[Co2Threshold]
-      ,[HumidityThreshold]
-      ,[TargetTemperature]
-      ,[TemperatureMargin])
-SELECT [SettingsId]
-      ,[Co2Threshold]
-      ,[HumidityThreshold]
-      ,[TargetTemperature]
-      ,[TemperatureMargin]
-  FROM sep4_dwh.stage.[DimSettings]
-
-
-  /****** Load to stage Measurement  ******/
+DECLARE @LastLoadDate int
+SET @LastLoadDate = (SELECT MAX([LastLoadDate]) from etl.LogUpdate where TableName = @UpdatedTable)
+-- Declare NewLoadDate variable whitch it takes todays date
+DECLARE @NewLoadDate int
+SET @NewLoadDate = CONVERT(char(8), GETDATE(), 112) 
 
 truncate table [edw].[FactMeasurement]
 insert into [edw].[FactMeasurement]
@@ -59,3 +32,12 @@ SELECT dr.[R_ID]
  FROM sep4_dwh.stage.FactMeasurement fm join sep4_dwh.edw.DimClimateDevice dcd on fm.ClimateDeviceId = dcd.ClimateDeviceId
  join sep4_dwh.edw.DimSettings ds on fm.SettingsId = ds.SettingsId
  join sep4_dwh.edw.DimRoom dr on fm.RoomId = dr.RoomId
+WHERE dcd.validTo='99990101'
+AND ds.validTo='99990101'
+AND dr.validTo='99990101'
+
+
+
+INSERT INTO etl.LogUpdate(TableName, LastLoadDate) VALUES (@UpdatedTable, @NewLoadDate)
+go
+

@@ -1,5 +1,14 @@
 
 use [sep4_dwh]
+
+DECLARE @UpdatedTable varchar
+SET @UpdatedTable = 'FactMeasurement'
+
+DECLARE @LastLoadDate int
+SET @LastLoadDate = (SELECT MAX([LastLoadDate]) from etl.LogUpdate where TableName = @UpdatedTable)
+-- Declare NewLoadDate variable whitch it takes todays date
+
+
 /****** Load to stage ClimateDevice  ******/
 truncate table [stage].[DimClimateDevice] 
 insert into [stage].[DimClimateDevice] 
@@ -61,5 +70,6 @@ SELECT r.[RoomId]
 
   FROM [sep4_source].[dbo].[Measurements] m join [sep4_source].[dbo].[Devices] d on m.ClimateDeviceId = d.ClimateDeviceId
   join [sep4_source].[dbo].[Rooms] r on d.RoomId = r.RoomId join [sep4_source].[dbo].[Settings] s on d.SettingsSettingId = s.SettingId
+  WHERE convert(int, m.[Timestamp], 112) > @LastLoadDate -- Only new measurement entries will be extracted from source into stage. 
 
-select * from stage.FactMeasurement
+ 
