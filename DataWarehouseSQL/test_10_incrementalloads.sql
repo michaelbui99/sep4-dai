@@ -1,4 +1,4 @@
-use [sep4_dwh]
+use [sep4_dwh_test]
 go
 
 IF EXISTS (SELECT * from sys.tables where name like '#tmp%') DROP TABLE #tmp
@@ -118,11 +118,18 @@ where [SettingsId] in (
 INSERT INTO [etl].[LogUpdate]
 ([TableName], [LastLoadDate])
 VALUES ('DimSettings', @NewLoadDate)
-
+go
 
 
 
 --DimRoom additions-----------------------------------------------------------
+DECLARE @LastLoadDate int
+-- Declare NewLoadDate variable whitch it takes todays date
+DECLARE @NewLoadDate int
+SET @NewLoadDate = CONVERT(char(8), GETDATE(), 112)
+--Declare FutureDate variable which is set to a distant future
+DECLARE @FutureDate int
+set @FutureDate = 99990101
 SET @LastLoadDate = (SELECT MAX([LastLoadDate])
                      from etl.LogUpdate
                      where TableName = 'DimRoom')
@@ -206,10 +213,18 @@ where [RoomId] in (
 INSERT INTO [etl].[LogUpdate]
 ([TableName], [LastLoadDate])
 VALUES ('DimRoom', @NewLoadDate)
+go
 
                      
 
 --DimClimateDevice additions ---------------------------------------------------------
+DECLARE @LastLoadDate int
+-- Declare NewLoadDate variable whitch it takes todays date
+DECLARE @NewLoadDate int
+SET @NewLoadDate = CONVERT(char(8), GETDATE(), 112)
+--Declare FutureDate variable which is set to a distant future
+DECLARE @FutureDate int
+set @FutureDate = 99990101
 SET @LastLoadDate = (SELECT MAX([LastLoadDate])
                      from etl.LogUpdate
                      where TableName = 'DimClimateDevice')
@@ -286,10 +301,17 @@ INSERT INTO [etl].[LogUpdate]
 [TableName],[LastLoadDate]
 )
 	VALUES ('DimClimateDevice',@NewLoadDate)
-
+go
 
 
 -- FactMeasurement load with newest version of dimensions -------------------------------------------------
+DECLARE @LastLoadDate int
+-- Declare NewLoadDate variable whitch it takes todays date
+DECLARE @NewLoadDate int
+SET @NewLoadDate = CONVERT(char(8), GETDATE(), 112)
+--Declare FutureDate variable which is set to a distant future
+DECLARE @FutureDate int
+set @FutureDate = 99990101
 DECLARE @UpdatedTable varchar
 SET @UpdatedTable = 'FactMeasurement'
 SET @LastLoadDate = (SELECT MAX([LastLoadDate])
@@ -314,9 +336,9 @@ SELECT dr.[R_ID]
 	  ,[Humidity_In_Percent]
 	  ,(SELECT TimeKey from edw.DimTime dt WHERE dt.TimeAltKey like convert(char(8), [Measurement_Time], 108))
 	  ,(SELECT D_ID from edw.DimDate dd WHERE dd.D_ID like convert(int, convert(varchar, [Measurement_Date], 112), 112)) 
- FROM sep4_dwh.stage.FactMeasurement fm join sep4_dwh.edw.DimClimateDevice dcd on fm.ClimateDeviceId = dcd.ClimateDeviceId
- join sep4_dwh.edw.DimSettings ds on fm.SettingsId = ds.SettingsId
- join sep4_dwh.edw.DimRoom dr on fm.RoomId = dr.RoomId
+ FROM sep4_dwh_test.stage.FactMeasurement fm join sep4_dwh_test.edw.DimClimateDevice dcd on fm.ClimateDeviceId = dcd.ClimateDeviceId
+ join sep4_dwh_test.edw.DimSettings ds on fm.SettingsId = ds.SettingsId
+ join sep4_dwh_test.edw.DimRoom dr on fm.RoomId = dr.RoomId
 WHERE dcd.validTo='99990101'
 AND ds.validTo='99990101'
 AND dr.validTo='99990101'
