@@ -46,12 +46,25 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("{roomName}/measurements")]
-        public async Task<ActionResult<IEnumerable<Measurement>>> GetMeasurmentByRoomName([FromRoute] string roomName)
+        public async Task<ActionResult<IEnumerable<Measurement>>> GetMeasurementByRoomName([FromRoute] string roomName, [FromQuery] long? validFrom, [FromQuery] long? validTo)
         {
             try
             {
-                IEnumerable<Measurement> measurements = await roomService.GetMeasurementsByRoomNameAsync(roomName);
+                IEnumerable<Measurement?> measurements = null;
+                if (validFrom != null || validTo != null)
+                {
+                    measurements = await roomService.GetRoomMeasurementsBetweenAsync(validFrom, validTo, roomName);
+                }
+                else
+                {
+                    measurements = await roomService.GetMeasurementsByRoomNameAsync(roomName);
+                }
+
                 return Ok(measurements);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return BadRequest(e.Message);
             }
             catch (ArgumentException e)
             {
@@ -73,7 +86,7 @@ namespace WebAPI.Controllers
             {
                 _logger.LogInformation(
                     $"Received POST Request for /measurements: {JsonSerializer.Serialize(measurements)}");
-                await roomService.AddMeasurements(measurements.DeviceId, roomName, measurements.Measurements);
+                await roomService.AddMeasurementsAsync(measurements.DeviceId, roomName, measurements.Measurements);
                 return Ok();
             }
             catch (ArgumentException e)

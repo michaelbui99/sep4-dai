@@ -49,9 +49,9 @@ namespace WebAPI.Services
             return await _measurementRepository.GetByRoomNameAsync(roomName);
         }
 
-        public async Task AddMeasurements(string deviceId, string roomName, IEnumerable<Measurement> measurements)
+        public async Task AddMeasurementsAsync(string deviceId, string roomName, IEnumerable<Measurement> measurements)
         {
-            var existingRoom = await _roomRepository.GetRoomByName(roomName);
+            var existingRoom = await _roomRepository.GetRoomByNameAsync(roomName);
 
             if (!(await RoomExists(roomName)))
             {
@@ -64,6 +64,26 @@ namespace WebAPI.Services
             }
 
             await _measurementRepository.AddMeasurements(deviceId, measurements);
+        }
+
+        public async Task<IEnumerable<Measurement?>> GetRoomMeasurementsBetweenAsync(long? validFromUnixSeconds,
+            long? validToUnixSeconds, string roomName)
+        {
+            if (validFromUnixSeconds == null && validToUnixSeconds != null)
+            {
+                throw new KeyNotFoundException($"ValidFrom cant be null");
+            }
+
+            if (validFromUnixSeconds != null && validToUnixSeconds == null)
+            {
+                throw new KeyNotFoundException($"ValidTo cant be null");
+            }
+            if (!(await RoomExists(roomName)))
+            {
+                throw new ArgumentException($"No room with id: {roomName} exists");
+            }
+
+            return await _roomRepository.GetRoomMeasurementsBetweenAsync(validFromUnixSeconds, validToUnixSeconds, roomName);
         }
 
         private bool ClimateDeviceExists(Room room, string deviceId)
@@ -84,7 +104,7 @@ namespace WebAPI.Services
 
         private async Task<bool> RoomExists(string roomName)
         {
-            var existingRoom = await _roomRepository.GetRoomByName(roomName);
+            var existingRoom = await _roomRepository.GetRoomByNameAsync(roomName);
             if (existingRoom == null)
             {
                 return false;
