@@ -40,8 +40,6 @@ UPDATE edw.DimRoom
 SET validFrom = 20220519, validTo = 99990101
 UPDATE edw.DimSettings
 SET validFrom = 20220519, validTo = 99990101
-UPDATE edw.DimPrice
-SET validFrom = 20220519, validTo = 99990101
 go
 
 
