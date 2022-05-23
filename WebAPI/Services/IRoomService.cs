@@ -13,5 +13,7 @@ namespace WebAPI.Services
         Task AddMeasurementsAsync(string deviceId, string roomName, IEnumerable<Measurement> measurements);
         Task<IEnumerable<Measurement?>> GetRoomMeasurementsBetweenAsync(long? validFromUnixSeconds,
             long? validToUnixSeconds, string roomName);
+
+        Task<Room> GetRoomByNameAsync(string name);
     }
 }

@@ -78,12 +78,24 @@ namespace WebAPI.Services
             {
                 throw new KeyNotFoundException($"ValidTo cant be null");
             }
+
             if (!(await RoomExists(roomName)))
             {
                 throw new ArgumentException($"No room with id: {roomName} exists");
             }
 
-            return await _roomRepository.GetRoomMeasurementsBetweenAsync(validFromUnixSeconds, validToUnixSeconds, roomName);
+            return await _roomRepository.GetRoomMeasurementsBetweenAsync(validFromUnixSeconds, validToUnixSeconds,
+                roomName);
+        }
+
+        public async Task<Room> GetRoomByNameAsync(string name)
+        {
+            if (!await RoomExists(name))
+            {
+                throw new ArgumentException($"No room with this name exists: {name}");
+            }
+
+            return await _roomRepository.GetRoomByNameAsync(name);
         }
 
         private bool ClimateDeviceExists(Room room, string deviceId)

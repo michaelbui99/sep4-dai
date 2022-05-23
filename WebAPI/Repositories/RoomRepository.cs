@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.Data.SqlClient;
@@ -24,7 +25,7 @@ namespace WebAPI.Repositories
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Actuators)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Measurements)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Settings)
-                .FirstOrDefaultAsync(room => room.RoomId == id);
+                .FirstOrDefaultAsync(room => room.RoomId == id)!;
         }
 
         public async Task<Room?> GetRoomByNameAsync(string roomName)
@@ -34,7 +35,7 @@ namespace WebAPI.Repositories
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Actuators)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Measurements)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Settings)
-                .FirstOrDefaultAsync(room => room.RoomName== roomName);
+                .FirstOrDefaultAsync(room => room.RoomName == roomName);
         }
 
         public async Task<IEnumerable<Measurement?>> GetRoomMeasurementsBetweenAsync(long? validFromUnixSeconds,
@@ -45,15 +46,15 @@ namespace WebAPI.Repositories
             var measurementsToReturn = new List<Measurement>();
 
             using (var connection =
-                   new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironmentDataWareHouse()))
+                new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironmentDataWareHouse()))
             {
-                const string query ="SELECT * FROM edw.FactMeasurement f " +
-                                    "JOIN edw.DimDate d ON f.MD_ID = d.D_ID " +
-                                    "JOIN edw.DimTime t ON f.MT_ID = t.TimeKey " +
-                                    "JOIN edw.DimRoom r ON f.R_Id = r.R_ID " +
-                                    "WHERE CAST(d.Date AS DATETIME) + CAST(t.TimeAltKey AS DATETIME) >= @validFrom " +
-                                    "AND CAST(d.Date AS DATETIME) + CAST(t.TimeAltKey AS DATETIME) <= @validTo " +
-                                    "AND r.RoomName = @roomName";
+                const string query = "SELECT * FROM edw.FactMeasurement f " +
+                                     "JOIN edw.DimDate d ON f.MD_ID = d.D_ID " +
+                                     "JOIN edw.DimTime t ON f.MT_ID = t.TimeKey " +
+                                     "JOIN edw.DimRoom r ON f.R_Id = r.R_ID " +
+                                     "WHERE CAST(d.Date AS DATETIME) + CAST(t.TimeAltKey AS DATETIME) >= @validFrom " +
+                                     "AND CAST(d.Date AS DATETIME) + CAST(t.TimeAltKey AS DATETIME) <= @validTo " +
+                                     "AND r.RoomName = @roomName";
                 connection.Open();
                 await using (var command = new SqlCommand(query, connection))
                 {
@@ -61,7 +62,7 @@ namespace WebAPI.Repositories
                     command.Parameters.AddWithValue("@validTo", validTo);
                     command.Parameters.AddWithValue("@roomName", roomName);
 
-                    var result =  await command.ExecuteReaderAsync();
+                    var result = await command.ExecuteReaderAsync();
 
                     if (result.HasRows)
                     {
@@ -79,6 +80,7 @@ namespace WebAPI.Repositories
                         }
                     }
                 }
+
                 connection.Close();
             }
 

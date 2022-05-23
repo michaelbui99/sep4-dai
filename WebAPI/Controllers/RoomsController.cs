@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Domain;
@@ -46,21 +47,36 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("{roomName}/measurements")]
-        public async Task<ActionResult<IEnumerable<Measurement>>> GetMeasurementByRoomName([FromRoute] string roomName, [FromQuery] long? validFrom, [FromQuery] long? validTo)
+        public async Task<ActionResult<IEnumerable<ReadDeviceMeasurementsDTO>>> GetMeasurementByRoomName([FromRoute] string roomName, [FromQuery] long? validFrom, [FromQuery] long? validTo)
         {
             try
             {
                 IEnumerable<Measurement?> measurements = null;
+                IList<ReadDeviceMeasurementsDTO> DTOList = null;
                 if (validFrom != null || validTo != null)
                 {
                     measurements = await roomService.GetRoomMeasurementsBetweenAsync(validFrom, validTo, roomName);
                 }
                 else
                 {
-                    measurements = await roomService.GetMeasurementsByRoomNameAsync(roomName);
+                    var room = await roomService.GetRoomByNameAsync(roomName);
+                     DTOList = new List<ReadDeviceMeasurementsDTO>();
+                    
+                   
+                    foreach (var roomClimateDevice in room.ClimateDevices)
+                    {
+                        var DTOToReturn = new ReadDeviceMeasurementsDTO()
+                        {
+                            DeviceId = roomClimateDevice.ClimateDeviceId,
+                            Measurements = roomClimateDevice.Measurements
+                        };
+                            DTOList.Add(DTOToReturn);
+                    }
+                    
+                  
                 }
 
-                return Ok(measurements);
+                return Ok(DTOList);
             }
             catch (KeyNotFoundException e)
             {
@@ -77,6 +93,7 @@ namespace WebAPI.Controllers
             }
         }
 
+        
         [HttpPost("{roomName}/measurements")]
         public async Task<ActionResult> AddMeasurements([FromRoute] string roomName,
             [FromBody]
