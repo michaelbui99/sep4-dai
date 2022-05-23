@@ -9,7 +9,7 @@ using WebAPI.Services;
 namespace Sep4Test.RoomServiceTests
 {
     [TestFixture]
-    public class RoomAddMeasurementsTest
+    public class GetRoomByNameTest
     {
         private IRoomService _roomService;
         private Mock<IRoomRepository> _roomRepository;
@@ -68,50 +68,25 @@ namespace Sep4Test.RoomServiceTests
         }
 
         [Test]
-        public void Create_New_Measurement_For_Room_DoesNotThrow()
+        public void GetRoomByName_DoesNotThrow()
         {
             _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("c02_02").Result).Returns(_room);
-            Assert.DoesNotThrowAsync(async () => await _roomService.AddMeasurementsAsync(_climateDevice.ClimateDeviceId, _room.RoomName, _measurements));
+            Assert.DoesNotThrowAsync(async () => await _roomService.GetRoomByNameAsync(_room.RoomName));
         }
 
         [Test]
-        public void Create_New_Measurement_For_NonExistingRoom_ThrowsArgumentException()
-        {
-            var roomTest = new Room();
-            _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("test").Result).Returns(roomTest);
-            Assert.ThrowsAsync<ArgumentException>(async () =>
-                await _roomService.AddMeasurementsAsync(_climateDevice.ClimateDeviceId, roomTest.RoomName,
-                    _measurements));
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        public void Create_new_Measurement_For_Room_WithInvalid_RoomName_ThrowArgumentException(string roomName)
+        public void GetRoomByName_Returns_Correct_Room()
         {
             _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("c02_02").Result).Returns(_room);
-            Assert.ThrowsAsync<ArgumentException>(async () => await _roomService.AddMeasurementsAsync(
-                _climateDevice.ClimateDeviceId, roomName,
-                _measurements));        
-        }
-
-        [Test]
-        public void Creat_New_Measurement_For_Room_From_NonExistingDevice_ThrowsArgumentException()
-        {
-            var deviceTest = new ClimateDevice();
-            _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("c02_02").Result).Returns(_room);
-            Assert.ThrowsAsync<ArgumentException>(async () => await _roomService.AddMeasurementsAsync(
-                deviceTest.ClimateDeviceId, _room.RoomName,
-                _measurements));
+            Assert.AreEqual(_room, _roomService.GetRoomByNameAsync("c02_02").Result);
         }
         
         [TestCase(null)]
         [TestCase("")]
-        public void Create_New_Measurement_For_Room_WithInvalid_DeviceId_ThrowArgumentException(string deviceId)
+        public void GetRoomByName_With_ImvalidRoomName_ThrowArgumentException(string roomName)
         {
             _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("c02_02").Result).Returns(_room);
-            Assert.ThrowsAsync<ArgumentException>(async () => await _roomService.AddMeasurementsAsync(
-                deviceId, _room.RoomName,
-                _measurements));        
+            Assert.ThrowsAsync<ArgumentException>(async () => await _roomService.GetRoomByNameAsync(roomName));
         }
     }
 }

@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                IEnumerable<Measurement> measurements = await roomService.GetMeasurementsByRoomIdAsync(roomId);
+                var measurements = await roomService.GetMeasurementsByRoomIdAsync(roomId);
                 return Ok(measurements);
             }
             catch (ArgumentException e)

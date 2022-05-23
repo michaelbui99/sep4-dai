@@ -9,7 +9,7 @@ using WebAPI.Services;
 namespace Sep4Test.RoomServiceTests
 {
     [TestFixture]
-    public class RoomAddMeasurementsTest
+    public class GetRoomMeasurementsBetweenTest
     {
         private IRoomService _roomService;
         private Mock<IRoomRepository> _roomRepository;
@@ -68,50 +68,38 @@ namespace Sep4Test.RoomServiceTests
         }
 
         [Test]
-        public void Create_New_Measurement_For_Room_DoesNotThrow()
+        public void GetMeasurements_ForRoom_Between_DoesNotThrow()
         {
-            _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("c02_02").Result).Returns(_room);
-            Assert.DoesNotThrowAsync(async () => await _roomService.AddMeasurementsAsync(_climateDevice.ClimateDeviceId, _room.RoomName, _measurements));
-        }
-
-        [Test]
-        public void Create_New_Measurement_For_NonExistingRoom_ThrowsArgumentException()
-        {
-            var roomTest = new Room();
-            _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("test").Result).Returns(roomTest);
-            Assert.ThrowsAsync<ArgumentException>(async () =>
-                await _roomService.AddMeasurementsAsync(_climateDevice.ClimateDeviceId, roomTest.RoomName,
-                    _measurements));
-        }
-
-        [TestCase(null)]
-        [TestCase("")]
-        public void Create_new_Measurement_For_Room_WithInvalid_RoomName_ThrowArgumentException(string roomName)
-        {
-            _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("c02_02").Result).Returns(_room);
-            Assert.ThrowsAsync<ArgumentException>(async () => await _roomService.AddMeasurementsAsync(
-                _climateDevice.ClimateDeviceId, roomName,
-                _measurements));        
-        }
-
-        [Test]
-        public void Creat_New_Measurement_For_Room_From_NonExistingDevice_ThrowsArgumentException()
-        {
-            var deviceTest = new ClimateDevice();
-            _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("c02_02").Result).Returns(_room);
-            Assert.ThrowsAsync<ArgumentException>(async () => await _roomService.AddMeasurementsAsync(
-                deviceTest.ClimateDeviceId, _room.RoomName,
-                _measurements));
+            _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync(_room.RoomName).Result).Returns(_room);
+            _roomRepository.Setup(repository => repository.
+                GetRoomMeasurementsBetweenAsync(0, 0 , _room.RoomName).Result).
+                Returns(new Dictionary<string, IList<Measurement?>>());
+            Assert.DoesNotThrowAsync(async () => await _roomService.GetRoomMeasurementsBetweenAsync(0, 0, _room.RoomName));
         }
         
         [TestCase(null)]
         [TestCase("")]
-        public void Create_New_Measurement_For_Room_WithInvalid_DeviceId_ThrowArgumentException(string deviceId)
+        public void GetMeasurementBetween_ForRoom_WithInvalidRoomName_ThrowsArgumentException(string roomName)
         {
             _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("c02_02").Result).Returns(_room);
-            Assert.ThrowsAsync<ArgumentException>(async () => await _roomService.AddMeasurementsAsync(
-                deviceId, _room.RoomName,
-                _measurements));        
+            Assert.ThrowsAsync<ArgumentException>(async () => await _roomService.GetRoomMeasurementsBetweenAsync(0, 0, roomName));
+        }
+
+        [TestCase(null, 0)]
+        [TestCase(0, null)]
+        public void GetMeasurementBetween_ForRoom_NullFromOrToTime_ThrowsArgumentException(long? from, long? to)
+        {
+            _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("c02_02").Result).Returns(_room);
+            Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+                await _roomService.GetRoomMeasurementsBetweenAsync(from, to, _room.RoomName));
+        }
+        
+        [Test]
+        public void GetMeasurementBetween_ForRoom_WithNonExistingRoom_ThrowsArgumentException()
+        {
+            Room room = null;
+            _roomRepository.Setup<Room>(repository => repository.GetRoomByNameAsync("test").Result).Returns(room);
+            Assert.ThrowsAsync<ArgumentException>(async () => await _roomService.GetRoomMeasurementsBetweenAsync(0, 0 , "Test"));
         }
     }
 }
