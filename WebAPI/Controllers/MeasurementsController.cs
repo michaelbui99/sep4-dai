@@ -37,9 +37,8 @@ namespace WebAPI.Controllers
             }
             catch (ArgumentException e)
             {
-                return NotFound(e.Message);
+                return BadRequest(e.Message);
             }
-         
             catch (Exception e)
             {
                 Console.WriteLine(e);
