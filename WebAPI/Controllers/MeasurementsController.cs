@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
             _logger = logger;
         }
 
-        [HttpPost("measurements")]
+        [HttpPost]
         public async Task<ActionResult<IEnumerable<Measurement>>> AddMeasurements(
             [FromBody] PostMeasurmentsDTO measurements)
         {
