@@ -45,6 +45,11 @@ namespace WebAPI.Services
             {
                 throw new ArgumentException($"No room with id: {roomName} exists");
             }
+            
+            if (String.IsNullOrEmpty(roomName) || String.IsNullOrWhiteSpace(roomName))
+            {
+                throw new ArgumentException("Invalid deviceid provided");
+            }
 
             return await _measurementRepository.GetByRoomNameAsync(roomName);
         }
@@ -70,6 +75,12 @@ namespace WebAPI.Services
             long? validFromUnixSeconds,
             long? validToUnixSeconds, string roomName)
         {
+            
+            if (String.IsNullOrEmpty(roomName) || String.IsNullOrWhiteSpace(roomName))
+            {
+                throw new ArgumentException("Invalid deviceid provided");
+            }
+            
             if (validFromUnixSeconds == null && validToUnixSeconds != null)
             {
                 throw new KeyNotFoundException($"ValidFrom cant be null");
@@ -82,7 +93,7 @@ namespace WebAPI.Services
 
             if (!(await RoomExists(roomName)))
             {
-                throw new ArgumentException($"No room with id: {roomName} exists");
+                throw new ArgumentException($"No room with name: {roomName} exists");
             }
 
             return await _roomRepository.GetRoomMeasurementsBetweenAsync(validFromUnixSeconds, validToUnixSeconds,

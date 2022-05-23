@@ -21,6 +21,16 @@ namespace WebAPI.Services
 
         public async Task AddMeasurements(string deviceId, IEnumerable<Measurement> measurements)
         {
+            if (String.IsNullOrEmpty(deviceId) || String.IsNullOrWhiteSpace(deviceId))
+            {
+                throw new ArgumentException("Invalid deviceid provided");
+            }
+
+            if (measurements is null)
+            {
+                throw new ArgumentException("Measurements cannot be null");
+            }
+
             try
             {
                 await _deviceService.GetDeviceById(deviceId);

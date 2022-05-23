@@ -15,4 +15,9 @@
         <PackageReference Include="coverlet.collector" Version="3.1.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\..\WebAPI\WebAPI.csproj" />
+    </ItemGroup>
+
 </Project>
