@@ -14,7 +14,31 @@ env:
     AWS_REGION: eu-west-1
 
 jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v3
+
+            - name: Setup dotnet
+              uses: actions/setup.dotnet@v2
+              with:
+                  dotnet-version: "6.0.x"
+
+            - name: Install Dependencies
+              working-directory: ./Test/Sep4Test
+              run: dotnet restore
+
+            - name: Build
+              working-directory: ./Test/Sep4Test
+              run: dotnet build -c Release --no-restore
+
+            - name: Run Tests
+              working-directory: ./Test/Sep4Test
+              run: dotnet test
+
     publish:
+        needs: test
         runs-on: ubuntu-latest
 
         steps:

@@ -89,8 +89,8 @@ namespace Sep4Test.MeasurementServiceTests
             _deviceServiceMock.Verify(service =>
                     service.AddNewDevice(It.IsAny<ClimateDevice>()),
                 Times.Never); // This is only called if a device does not exist
-            _measurementRepositoryMock.Verify(service =>
-                service.AddMeasurements(existingDevice.ClimateDeviceId, testMeasurements), Times.Once);
+            _measurementRepositoryMock.Verify(repository=>
+                repository.AddMeasurements(existingDevice.ClimateDeviceId, testMeasurements), Times.Once);
         }
 
         [TestCase("")]
@@ -124,7 +124,7 @@ namespace Sep4Test.MeasurementServiceTests
             IEnumerable<Measurement> nullList = null;
             var randomDeviceId = "test1";
 
-            // Arrange & Act
+            // Act & Assert
             Assert.ThrowsAsync<ArgumentException>(async () =>
                 await _measurementService.AddMeasurements(randomDeviceId, nullList));
         }
