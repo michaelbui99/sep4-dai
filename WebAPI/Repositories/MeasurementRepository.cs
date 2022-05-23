@@ -57,7 +57,7 @@ namespace WebAPI.Repositories
             using (SqlConnection connection =
                    new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironment()))
             {
-                string query =
+                var query =
                     "INSERT INTO dbo.Measurements(Timestamp, Temperature, Humidity, Co2, ClimateDeviceId) " +
                     "VALUES (@timestamp,@temperature,@humidity,@co2,@deviceId)";
                 connection.Open();
@@ -71,7 +71,7 @@ namespace WebAPI.Repositories
                         command.Parameters.AddWithValue("@co2", measurement.Co2);
                         command.Parameters.AddWithValue("@deviceId", deviceId);
 
-                        int result = command.ExecuteNonQuery();
+                        var result = command.ExecuteNonQuery();
 
                         if (result < 0)
                         {

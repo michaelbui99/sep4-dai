@@ -346,4 +346,3 @@ AND dr.validTo='99990101'
 
 INSERT INTO etl.LogUpdate(TableName, LastLoadDate) VALUES (@UpdatedTable, @NewLoadDate)
 go
-

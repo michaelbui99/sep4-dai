@@ -10,6 +10,10 @@ namespace WebAPI.Services
         Task<IEnumerable<Measurement>> GetMeasurementsByRoomIdAsync(int id);
         Task<IEnumerable<Measurement>> GetMeasurementsByRoomNameAsync(string roomName);
 
-        Task AddMeasurements(string deviceId, string roomName, IEnumerable<Measurement> measurements);
+        Task AddMeasurementsAsync(string deviceId, string roomName, IEnumerable<Measurement> measurements);
+        Task<IDictionary<string, IList<Measurement?>>> GetRoomMeasurementsBetweenAsync(long? validFromUnixSeconds,
+            long? validToUnixSeconds, string roomName);
+
+        Task<Room> GetRoomByNameAsync(string name);
     }
 }

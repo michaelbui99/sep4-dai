@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Domain;
@@ -46,12 +47,51 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("{roomName}/measurements")]
-        public async Task<ActionResult<IEnumerable<Measurement>>> GetMeasurmentByRoomName([FromRoute] string roomName)
+        public async Task<ActionResult<IEnumerable<ReadDeviceMeasurementsDTO>>> GetMeasurementByRoomName(
+            [FromRoute]
+            string roomName, [FromQuery] long? validFrom, [FromQuery] long? validTo)
         {
             try
             {
-                IEnumerable<Measurement> measurements = await roomService.GetMeasurementsByRoomNameAsync(roomName);
-                return Ok(measurements);
+                IEnumerable<Measurement?> measurements = null;
+                IList<ReadDeviceMeasurementsDTO> DTOList = new List<ReadDeviceMeasurementsDTO>();
+                if (validFrom != null || validTo != null)
+                {
+                    var deviceMeasurementMap =
+                        await roomService.GetRoomMeasurementsBetweenAsync(validFrom, validTo, roomName);
+
+                    foreach (var key in deviceMeasurementMap.Keys)
+                    {
+                        var DTOToReturn = new ReadDeviceMeasurementsDTO()
+                        {
+                            DeviceId = key,
+                            Measurements = deviceMeasurementMap[key]
+                        };
+
+                        DTOList.Add(DTOToReturn);
+                    }
+                }
+                else
+                {
+                    var room = await roomService.GetRoomByNameAsync(roomName);
+
+
+                    foreach (var roomClimateDevice in room.ClimateDevices)
+                    {
+                        var DTOToReturn = new ReadDeviceMeasurementsDTO()
+                        {
+                            DeviceId = roomClimateDevice.ClimateDeviceId,
+                            Measurements = roomClimateDevice.Measurements
+                        };
+                        DTOList.Add(DTOToReturn);
+                    }
+                }
+
+                return Ok(DTOList);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return BadRequest(e.Message);
             }
             catch (ArgumentException e)
             {
@@ -64,6 +104,7 @@ namespace WebAPI.Controllers
             }
         }
 
+
         [HttpPost("{roomName}/measurements")]
         public async Task<ActionResult> AddMeasurements([FromRoute] string roomName,
             [FromBody]
@@ -73,7 +114,7 @@ namespace WebAPI.Controllers
             {
                 _logger.LogInformation(
                     $"Received POST Request for /measurements: {JsonSerializer.Serialize(measurements)}");
-                await roomService.AddMeasurements(measurements.DeviceId, roomName, measurements.Measurements);
+                await roomService.AddMeasurementsAsync(measurements.DeviceId, roomName, measurements.Measurements);
                 return Ok();
             }
             catch (ArgumentException e)

@@ -14,7 +14,7 @@ namespace WebAPI.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(ConnectionStringGenerator.GetConnectionStringFromDotEnv());
+            optionsBuilder.UseSqlServer(ConnectionStringGenerator.GetConnectionStringFromEnvironment());
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

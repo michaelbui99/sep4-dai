@@ -1,6 +1,7 @@
 using NUnit.Framework;
 
-namespace Sep4Test;
+namespace Sep4Test
+{
 
 public class Tests
 {
@@ -14,4 +15,6 @@ public class Tests
     {
         Assert.Pass();
     }
+}
+
 }
