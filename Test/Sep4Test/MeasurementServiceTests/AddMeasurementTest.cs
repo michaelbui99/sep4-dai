@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Domain;
 using Moq;
@@ -91,6 +92,41 @@ namespace Sep4Test.MeasurementServiceTests
             _measurementRepositoryMock.Verify(service =>
                 service.AddMeasurements(existingDevice.ClimateDeviceId, testMeasurements), Times.Once);
         }
+
+        [TestCase("")]
+        [TestCase("    ")]
+        [TestCase(" ")]
+        [TestCase(null)]
+        public void AddMeasurement_InvalidDeviceIdProvided_ThrowsArgumentException(string deviceId)
+        {
+            // Arrange
+            var testMeasurements = new List<Measurement>()
+            {
+                new Measurement()
+                {
+                    Co2 = 200,
+                    Temperature = 20,
+                    Humidity = 10,
+                    Timestamp = DateTime.Now
+                }
+            };
+
+
+            // Act & Assert
+            Assert.ThrowsAsync<ArgumentException>(async () =>
+                await _measurementService.AddMeasurements(deviceId, testMeasurements));
+        }
+
+        [Test]
+        public void AddMeasurement_MeasurementsIsNull_ThrowsArgumentException()
+        {
+            // Arrange
+            IEnumerable<Measurement> nullList = null;
+            var randomDeviceId = "test1";
+
+            // Arrange & Act
+            Assert.ThrowsAsync<ArgumentException>(async () =>
+                await _measurementService.AddMeasurements(randomDeviceId, nullList));
+        }
     }
 }
-

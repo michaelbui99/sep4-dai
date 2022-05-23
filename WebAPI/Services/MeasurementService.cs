@@ -25,6 +25,12 @@ namespace WebAPI.Services
             {
                 throw new ArgumentException("Invalid deviceid provided");
             }
+
+            if (measurements is null)
+            {
+                throw new ArgumentException("Measurements cannot be null");
+            }
+
             try
             {
                 await _deviceService.GetDeviceById(deviceId);
