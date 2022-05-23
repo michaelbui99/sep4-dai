@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.Data.SqlClient;
@@ -38,12 +39,13 @@ namespace WebAPI.Repositories
                 .FirstOrDefaultAsync(room => room.RoomName == roomName);
         }
 
-        public async Task<IEnumerable<Measurement?>> GetRoomMeasurementsBetweenAsync(long? validFromUnixSeconds,
+        public async Task<IDictionary<string, IList<Measurement?>>> GetRoomMeasurementsBetweenAsync(
+            long? validFromUnixSeconds,
             long? validToUnixSeconds, string roomName)
         {
             var validFrom = DateUtil.GetDateTimeFromUnixTimeSeconds((long) validFromUnixSeconds);
             var validTo = DateUtil.GetDateTimeFromUnixTimeSeconds((long) validToUnixSeconds);
-            var measurementsToReturn = new List<Measurement>();
+            var deviceMeasurementMap = new Dictionary<string, IList<Measurement>>();
 
             using (var connection =
                 new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironmentDataWareHouse()))
@@ -52,6 +54,7 @@ namespace WebAPI.Repositories
                                      "JOIN edw.DimDate d ON f.MD_ID = d.D_ID " +
                                      "JOIN edw.DimTime t ON f.MT_ID = t.TimeKey " +
                                      "JOIN edw.DimRoom r ON f.R_Id = r.R_ID " +
+                                     "JOIN edw.DimClimateDevice cd on f.C_ID = cd.C_ID " +
                                      "WHERE CAST(d.Date AS DATETIME) + CAST(t.TimeAltKey AS DATETIME) >= @validFrom " +
                                      "AND CAST(d.Date AS DATETIME) + CAST(t.TimeAltKey AS DATETIME) <= @validTo " +
                                      "AND r.RoomName = @roomName";
@@ -70,13 +73,22 @@ namespace WebAPI.Repositories
                         {
                             var dateTime = result.GetDateTime(9);
                             dateTime = dateTime + result.GetTimeSpan(19);
-                            measurementsToReturn.Add(new Measurement()
+                            var ClimateDeviceId = result.GetString(30);
+
+                            if (!deviceMeasurementMap.ContainsKey(ClimateDeviceId))
+                            {
+                                deviceMeasurementMap[ClimateDeviceId] = new List<Measurement>();
+                            }
+
+                            var measurement = new Measurement()
                             {
                                 Co2 = result.GetInt32(5),
                                 Temperature = (float) result.GetDouble(6),
                                 Humidity = result.GetInt32(7),
                                 Timestamp = dateTime
-                            });
+                            };
+                            
+                            deviceMeasurementMap[ClimateDeviceId].Add(measurement);
                         }
                     }
                 }
@@ -84,7 +96,7 @@ namespace WebAPI.Repositories
                 connection.Close();
             }
 
-            return measurementsToReturn;
+            return deviceMeasurementMap;
         }
     }
 }

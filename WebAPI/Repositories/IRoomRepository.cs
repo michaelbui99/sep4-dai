@@ -8,7 +8,7 @@ namespace WebAPI.Repositories
     {
         Task<Room?> GetRoomByIdAsync(int id);
         Task<Room?> GetRoomByNameAsync(string roomName);
-        Task<IEnumerable<Measurement?>> GetRoomMeasurementsBetweenAsync(long? validFromUnixSeconds,
+        Task<IDictionary<string, IList<Measurement?>>> GetRoomMeasurementsBetweenAsync(long? validFromUnixSeconds,
             long? validToUnixSeconds, string roomName);
     }
 }

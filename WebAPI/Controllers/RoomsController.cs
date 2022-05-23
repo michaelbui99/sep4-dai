@@ -47,22 +47,35 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("{roomName}/measurements")]
-        public async Task<ActionResult<IEnumerable<ReadDeviceMeasurementsDTO>>> GetMeasurementByRoomName([FromRoute] string roomName, [FromQuery] long? validFrom, [FromQuery] long? validTo)
+        public async Task<ActionResult<IEnumerable<ReadDeviceMeasurementsDTO>>> GetMeasurementByRoomName(
+            [FromRoute]
+            string roomName, [FromQuery] long? validFrom, [FromQuery] long? validTo)
         {
             try
             {
                 IEnumerable<Measurement?> measurements = null;
-                IList<ReadDeviceMeasurementsDTO> DTOList = null;
+                IList<ReadDeviceMeasurementsDTO> DTOList = new List<ReadDeviceMeasurementsDTO>();
                 if (validFrom != null || validTo != null)
                 {
-                    measurements = await roomService.GetRoomMeasurementsBetweenAsync(validFrom, validTo, roomName);
+                    var deviceMeasurementMap =
+                        await roomService.GetRoomMeasurementsBetweenAsync(validFrom, validTo, roomName);
+
+                    foreach (var key in deviceMeasurementMap.Keys)
+                    {
+                        var DTOToReturn = new ReadDeviceMeasurementsDTO()
+                        {
+                            DeviceId = key,
+                            Measurements = deviceMeasurementMap[key]
+                        };
+
+                        DTOList.Add(DTOToReturn);
+                    }
                 }
                 else
                 {
                     var room = await roomService.GetRoomByNameAsync(roomName);
-                     DTOList = new List<ReadDeviceMeasurementsDTO>();
-                    
-                   
+
+
                     foreach (var roomClimateDevice in room.ClimateDevices)
                     {
                         var DTOToReturn = new ReadDeviceMeasurementsDTO()
@@ -70,10 +83,8 @@ namespace WebAPI.Controllers
                             DeviceId = roomClimateDevice.ClimateDeviceId,
                             Measurements = roomClimateDevice.Measurements
                         };
-                            DTOList.Add(DTOToReturn);
+                        DTOList.Add(DTOToReturn);
                     }
-                    
-                  
                 }
 
                 return Ok(DTOList);
@@ -93,7 +104,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        
+
         [HttpPost("{roomName}/measurements")]
         public async Task<ActionResult> AddMeasurements([FromRoute] string roomName,
             [FromBody]

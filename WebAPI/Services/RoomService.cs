@@ -66,7 +66,8 @@ namespace WebAPI.Services
             await _measurementRepository.AddMeasurements(deviceId, measurements);
         }
 
-        public async Task<IEnumerable<Measurement?>> GetRoomMeasurementsBetweenAsync(long? validFromUnixSeconds,
+        public async Task<IDictionary<string, IList<Measurement?>>> GetRoomMeasurementsBetweenAsync(
+            long? validFromUnixSeconds,
             long? validToUnixSeconds, string roomName)
         {
             if (validFromUnixSeconds == null && validToUnixSeconds != null)
