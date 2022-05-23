@@ -18,26 +18,38 @@ namespace WebAPI.Services
 
         public async Task<ClimateDevice> GetDeviceById(string deviceId)
         {
-            var climateDevice = await _deviceRepository.GetDeviceById(deviceId);
-
-            if (climateDevice == null)
+            if (!string.IsNullOrWhiteSpace(deviceId) || !string.IsNullOrWhiteSpace(deviceId))
             {
-                throw new ArgumentException($"No device with id: {deviceId} exists");
+                var climateDevice = await _deviceRepository.GetDeviceById(deviceId);
+
+                if (climateDevice == null)
+                {
+                    throw new ArgumentException($"No device with id: {deviceId} exists");
+                }
+
+                return climateDevice;
             }
 
-            return climateDevice;
+            throw new ArgumentNullException("deviceId can't be null");
         }
 
         public async Task AddNewDevice(ClimateDevice device)
         {
-            try
+            if (device != null)
             {
-                await GetDeviceById(device.ClimateDeviceId);
-                throw new DeviceAlreadyExistsException($"Device with id: {device.ClimateDeviceId} exists");
+                try
+                {
+                    await GetDeviceById(device.ClimateDeviceId);
+                    throw new DeviceAlreadyExistsException($"Device with id: {device.ClimateDeviceId} exists");
+                }
+                catch (ArgumentException e)
+                {
+                    await _deviceRepository.AddNewDevice(device);
+                }
             }
-            catch (ArgumentException e)
+            else
             {
-                await _deviceRepository.AddNewDevice(device);
+                throw new ArgumentNullException("device can't be null");
             }
         }
     }
