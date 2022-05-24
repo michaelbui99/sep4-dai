@@ -11,5 +11,9 @@ namespace WebAPI.Repositories
         Task<Room?> GetRoomByNameAsync(string roomName);
         Task<IDictionary<string, IList<Measurement?>>> GetRoomMeasurementsBetweenAsync(long? validFromUnixSeconds,
             long? validToUnixSeconds, string roomName);
+
+        Task UpdateRoomDevicesAsync(string roomName, string deviceId);
+        
+        
     }
 }

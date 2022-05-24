@@ -18,5 +18,7 @@ namespace WebAPI.Services
             long? validToUnixSeconds, string roomName);
 
         Task<Room> GetRoomByNameAsync(string name);
+        
+        Task UpdateRoomDevicesAsync(string roomName, string deviceId);
     }
 }

@@ -45,6 +45,26 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpPut("{roomName}/devices/{deviceId}")]
+        public async Task<ActionResult> UpdateRoomDevices([FromRoute] string roomName, [FromRoute] string deviceId)
+        {
+            try
+            {
+                await roomService.UpdateRoomDevicesAsync(roomName, deviceId);
+                return Ok();
+
+            }
+            catch (ArgumentException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500);
+            }
+        }
+
 
         [HttpGet("{roomName}/measurements")]
         public async Task<ActionResult<IEnumerable<ReadDeviceMeasurementsDTO>>> GetMeasurementByRoomName(
