@@ -1,11 +1,8 @@
 
 use [sep4_dwh]
 
-DECLARE @UpdatedTable varchar
-SET @UpdatedTable = 'FactMeasurement'
-
 DECLARE @LastLoadDate int
-SET @LastLoadDate = (SELECT MAX([LastLoadDate]) from etl.LogUpdate where TableName = @UpdatedTable)
+SET @LastLoadDate = (SELECT MAX([LastLoadDate]) from etl.LogUpdate where TableName = 'FactMeasurement')
 -- Declare NewLoadDate variable whitch it takes todays date
 
 
