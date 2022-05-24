@@ -40,15 +40,15 @@ namespace Sep4Test.MeasurementServiceTests
                 }
             };
 
-            _deviceServiceMock.Setup(service => service.GetDeviceById(nonExistingDeviceId)).Throws<ArgumentException>();
+            _deviceServiceMock.Setup(service => service.GetDeviceByIdAsync(nonExistingDeviceId)).Throws<ArgumentException>();
 
             // Act 
             _measurementService.AddMeasurements(nonExistingDeviceId, testMeasurements);
 
             // Assert
-            _deviceServiceMock.Verify(service => service.GetDeviceById(nonExistingDeviceId), Times.Once);
+            _deviceServiceMock.Verify(service => service.GetDeviceByIdAsync(nonExistingDeviceId), Times.Once);
             _deviceServiceMock.Verify(service =>
-                    service.AddNewDevice(It.IsAny<ClimateDevice>()),
+                    service.AddNewDeviceAsync(It.IsAny<ClimateDevice>()),
                 Times.Once); // This is only called if a device does not exist
             _measurementRepositoryMock.Verify(service =>
                 service.AddMeasurements(nonExistingDeviceId, testMeasurements), Times.Once);
@@ -78,19 +78,19 @@ namespace Sep4Test.MeasurementServiceTests
             };
 
             _deviceServiceMock
-                .Setup<ClimateDevice>(service => service.GetDeviceById(existingDevice.ClimateDeviceId).Result)
+                .Setup<ClimateDevice>(service => service.GetDeviceByIdAsync(existingDevice.ClimateDeviceId).Result)
                 .Returns(existingDevice);
 
             // Act 
             _measurementService.AddMeasurements(existingDevice.ClimateDeviceId, testMeasurements);
 
             // Assert
-            _deviceServiceMock.Verify(service => service.GetDeviceById(existingDevice.ClimateDeviceId), Times.Once);
+            _deviceServiceMock.Verify(service => service.GetDeviceByIdAsync(existingDevice.ClimateDeviceId), Times.Once);
             _deviceServiceMock.Verify(service =>
-                    service.AddNewDevice(It.IsAny<ClimateDevice>()),
+                    service.AddNewDeviceAsync(It.IsAny<ClimateDevice>()),
                 Times.Never); // This is only called if a device does not exist
-            _measurementRepositoryMock.Verify(service =>
-                service.AddMeasurements(existingDevice.ClimateDeviceId, testMeasurements), Times.Once);
+            _measurementRepositoryMock.Verify(repository=>
+                repository.AddMeasurements(existingDevice.ClimateDeviceId, testMeasurements), Times.Once);
         }
 
         [TestCase("")]
@@ -124,7 +124,7 @@ namespace Sep4Test.MeasurementServiceTests
             IEnumerable<Measurement> nullList = null;
             var randomDeviceId = "test1";
 
-            // Arrange & Act
+            // Act & Assert
             Assert.ThrowsAsync<ArgumentException>(async () =>
                 await _measurementService.AddMeasurements(randomDeviceId, nullList));
         }

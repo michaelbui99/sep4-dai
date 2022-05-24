@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
 
@@ -6,6 +7,7 @@ namespace WebAPI.Services
 {
     public interface IRoomService
     {
+        Task<IEnumerable<Room>> GetAllRoomsAsync();
         Task<Room> GetRoomByIdAsync(int id);
         Task<IEnumerable<Measurement>> GetMeasurementsByRoomIdAsync(int id);
         Task<IEnumerable<Measurement>> GetMeasurementsByRoomNameAsync(string roomName);
@@ -16,5 +18,7 @@ namespace WebAPI.Services
             long? validToUnixSeconds, string roomName);
 
         Task<Room> GetRoomByNameAsync(string name);
+        
+        Task UpdateRoomDevicesAsync(string roomName, string deviceId);
     }
 }

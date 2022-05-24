@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using Microsoft.AspNetCore.Mvc;
 using WebAPI.Repositories;
 
 namespace WebAPI.Services
@@ -16,6 +17,11 @@ namespace WebAPI.Services
         {
             _roomRepository = roomRepository;
             _measurementRepository = measurementRepository;
+        }
+
+        public async Task<IEnumerable<Room>> GetAllRoomsAsync()
+        {
+            return await _roomRepository.GetAllRoomsAsync();
         }
 
         public async Task<Room> GetRoomByIdAsync(int id)
@@ -110,9 +116,38 @@ namespace WebAPI.Services
             return await _roomRepository.GetRoomByNameAsync(name);
         }
 
+        public async Task UpdateRoomDevicesAsync(string roomName, string deviceId)
+        {
+            if (!await RoomExists(roomName))
+            {
+                throw new ArgumentException($"No room with this name exists: {roomName}");
+            }
+
+            if (!await ClimateDeviceExists(roomName, deviceId))
+            {
+                throw new ArgumentException($"No device with this id exists: {deviceId}");
+            }
+
+            await _roomRepository.UpdateRoomDevicesAsync(roomName, deviceId);
+        }
+
         private bool ClimateDeviceExists(Room room, string deviceId)
         {
             return room.ClimateDevices.Any(roomClimateDevice => roomClimateDevice.ClimateDeviceId == deviceId);
+        }
+        
+        private async Task<bool> ClimateDeviceExists(string roomName, string deviceId)
+        {
+            var rooms = await GetAllRoomsAsync();
+            foreach (var room in rooms)
+            {
+                if (room.ClimateDevices.Any(device => device.ClimateDeviceId == deviceId))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private async Task<bool> RoomExists(int roomId)

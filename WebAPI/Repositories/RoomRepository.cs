@@ -19,6 +19,16 @@ namespace WebAPI.Repositories
             _appDbContext = appDbContext;
         }
 
+        public async Task<IEnumerable<Room?>> GetAllRoomsAsync()
+        {
+            return await _appDbContext.Rooms?.Include(roomSettings => roomSettings.Settings)
+                .Include(roomMe => roomMe.ClimateDevices).ThenInclude(device => device.Sensors)
+                .Include(room => room.ClimateDevices).ThenInclude(device => device.Actuators)
+                .Include(room => room.ClimateDevices).ThenInclude(device => device.Measurements)
+                .Include(room => room.ClimateDevices).ThenInclude(device => device.Settings)
+                .ToListAsync();
+        }
+
         public async Task<Room?> GetRoomByIdAsync(int id)
         {
             return await _appDbContext.Rooms?.Include(roomSettings => roomSettings.Settings)
@@ -48,7 +58,7 @@ namespace WebAPI.Repositories
             var deviceMeasurementMap = new Dictionary<string, IList<Measurement>>();
 
             using (var connection =
-                new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironmentDataWareHouse()))
+                   new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironmentDataWareHouse()))
             {
                 const string query = "SELECT * FROM edw.FactMeasurement f " +
                                      "JOIN edw.DimDate d ON f.MD_ID = d.D_ID " +
@@ -97,6 +107,57 @@ namespace WebAPI.Repositories
             }
 
             return deviceMeasurementMap;
+        }
+
+        public async Task UpdateRoomDevicesAsync(string roomName, string deviceId)
+        {
+            using (var connection =
+                   new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironment()))
+            {
+                const string query =
+                    "update dbo.Devices set RoomId = (select RoomId from dbo.Rooms where RoomName = @roomName) where ClimateDeviceId = @deviceId";
+                connection.Open();
+                await using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@roomName", roomName);
+                    command.Parameters.AddWithValue("@deviceId", deviceId);
+
+                    var result = await command.ExecuteNonQueryAsync();
+                    
+                    if (result < 0)
+                    {
+                        throw new ArgumentException("Could not update new query");
+                    }
+                }
+
+                await connection.CloseAsync();
+                await UpdateDeviceSetting(roomName, deviceId);
+            }
+        }
+
+        private async Task UpdateDeviceSetting(string roomName, string deviceId)
+        {
+            using (var connection =
+                   new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironment()))
+            {
+                const string query =
+                    "update dbo.Devices set SettingsSettingId  = (select SettingsSettingId from dbo.Rooms where RoomName = @roomName) where ClimateDeviceId = @deviceId";
+                connection.Open();
+                await using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@roomName", roomName);
+                    command.Parameters.AddWithValue("@deviceId", deviceId);
+
+                    var result = await command.ExecuteNonQueryAsync();
+                    
+                    if (result < 0)
+                    {
+                        throw new ArgumentException("Could not update new query");
+                    }
+                }
+
+                await connection.CloseAsync();
+            }
         }
     }
 }
