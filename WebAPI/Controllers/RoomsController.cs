@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{roomId:int}/measurements")]
-        public async Task<ActionResult<IEnumerable<Measurement>>> GetMeasurmentByRoomId([FromRoute] int roomId)
+        public async Task<ActionResult<IEnumerable<Measurement>>> GetMeasurementByRoomId([FromRoute] int roomId)
         {
             try
             {
