@@ -12,12 +12,14 @@ namespace Sep4Test.DeviceServiceTests
     {
         private IDeviceService _deviceService;
         private Mock<IDeviceRepository> _deviceRepository;
+        private Mock<IRoomService> _roomService;
         
         [SetUp]
         public void SetUp()
         {
             _deviceRepository = new Mock<IDeviceRepository>();
-            _deviceService = new DeviceService(_deviceRepository.Object); 
+            _roomService = new Mock<IRoomService>();
+            _deviceService = new DeviceService(_deviceRepository.Object, _roomService.Object); 
         }
 
 
@@ -29,9 +31,9 @@ namespace Sep4Test.DeviceServiceTests
             ClimateDevice device = null;
             
             _deviceRepository.Setup<ClimateDevice>(x =>
-                x.GetDeviceById(deviceId).Result).Returns(device);
+                x.GetDeviceByIdAsync(deviceId).Result).Returns(device);
             
-            Assert.ThrowsAsync<ArgumentException>(async ()=> await _deviceService.GetDeviceById(deviceId));
+            Assert.ThrowsAsync<ArgumentException>(async ()=> await _deviceService.GetDeviceByIdAsync(deviceId));
         }
         
         [Test]
@@ -43,9 +45,9 @@ namespace Sep4Test.DeviceServiceTests
             };
             
             _deviceRepository.Setup<ClimateDevice>(x =>
-                x.GetDeviceById(device.ClimateDeviceId).Result).Returns(device);
+                x.GetDeviceByIdAsync(device.ClimateDeviceId).Result).Returns(device);
             
-            Assert.DoesNotThrowAsync(async () => await _deviceService.GetDeviceById(device.ClimateDeviceId));
+            Assert.DoesNotThrowAsync(async () => await _deviceService.GetDeviceByIdAsync(device.ClimateDeviceId));
 
         }
         
@@ -53,7 +55,7 @@ namespace Sep4Test.DeviceServiceTests
         [TestCase("")]
         public void GetDeviceById_InvalidArgument_Throws(string argument)
         {
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await _deviceService.GetDeviceById(argument));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await _deviceService.GetDeviceByIdAsync(argument));
         }
 
     }

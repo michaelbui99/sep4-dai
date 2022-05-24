@@ -7,6 +7,7 @@ namespace WebAPI.Services
 {
     public interface IRoomService
     {
+        Task<IEnumerable<Room>> GetAllRoomsAsync();
         Task<Room> GetRoomByIdAsync(int id);
         Task<IEnumerable<Measurement>> GetMeasurementsByRoomIdAsync(int id);
         Task<IEnumerable<Measurement>> GetMeasurementsByRoomNameAsync(string roomName);
