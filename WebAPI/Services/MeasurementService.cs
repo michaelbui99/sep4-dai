@@ -33,14 +33,14 @@ namespace WebAPI.Services
 
             try
             {
-                await _deviceService.GetDeviceById(deviceId);
+                await _deviceService.GetDeviceByIdAsync(deviceId);
             }
             catch (ArgumentException e)
             {
                 try
                 {
                     Console.WriteLine("miaw");
-                    await _deviceService.AddNewDevice(new ClimateDevice() {ClimateDeviceId = deviceId});
+                    await _deviceService.AddNewDeviceAsync(new ClimateDevice() {ClimateDeviceId = deviceId});
                     await _measurementRepository.AddMeasurements(deviceId, measurements);
                     return;
                 }

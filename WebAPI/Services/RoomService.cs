@@ -18,6 +18,11 @@ namespace WebAPI.Services
             _measurementRepository = measurementRepository;
         }
 
+        public async Task<IEnumerable<Room>> GetAllRoomsAsync()
+        {
+            return await _roomRepository.GetAllRoomsAsync();
+        }
+
         public async Task<Room> GetRoomByIdAsync(int id)
         {
             var room = await _roomRepository.GetRoomByIdAsync(id);

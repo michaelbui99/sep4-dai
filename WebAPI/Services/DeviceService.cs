@@ -10,17 +10,39 @@ namespace WebAPI.Services
     public class DeviceService : IDeviceService
     {
         private IDeviceRepository _deviceRepository;
+        private IRoomService _roomService;
 
-        public DeviceService(IDeviceRepository deviceRepository)
+        public DeviceService(IDeviceRepository deviceRepository, IRoomService roomService)
         {
             _deviceRepository = deviceRepository;
+            _roomService = roomService;
         }
 
-        public async Task<ClimateDevice> GetDeviceById(string deviceId)
+        public async Task<IDictionary<string, string>> GetRoomNamesForDevices()
+        {
+            var roomNameMapping = new Dictionary<string, string>();
+            var roomList = await _roomService.GetAllRoomsAsync();
+            foreach (var room in roomList)
+            {
+                foreach (var roomClimateDevice in room.ClimateDevices)
+                {
+                    roomNameMapping[roomClimateDevice.ClimateDeviceId] = room.RoomName;
+                }
+            }
+
+            return roomNameMapping;
+        }
+
+        public async Task<IEnumerable<ClimateDevice>> GetAllDevicesAsync()
+        {
+            return await _deviceRepository.GetAllDevicesAsync();
+        }
+
+        public async Task<ClimateDevice> GetDeviceByIdAsync(string deviceId)
         {
             if (!string.IsNullOrWhiteSpace(deviceId) || !string.IsNullOrWhiteSpace(deviceId))
             {
-                var climateDevice = await _deviceRepository.GetDeviceById(deviceId);
+                var climateDevice = await _deviceRepository.GetDeviceByIdAsync(deviceId);
 
                 if (climateDevice == null)
                 {
@@ -33,18 +55,18 @@ namespace WebAPI.Services
             throw new ArgumentNullException("deviceId can't be null");
         }
 
-        public async Task AddNewDevice(ClimateDevice device)
+        public async Task AddNewDeviceAsync(ClimateDevice device)
         {
             if (device != null)
             {
                 try
                 {
-                    await GetDeviceById(device.ClimateDeviceId);
+                    await GetDeviceByIdAsync(device.ClimateDeviceId);
                     throw new DeviceAlreadyExistsException($"Device with id: {device.ClimateDeviceId} exists");
                 }
                 catch (ArgumentException e)
                 {
-                    await _deviceRepository.AddNewDevice(device);
+                    await _deviceRepository.AddNewDeviceAsync(device);
                 }
             }
             else

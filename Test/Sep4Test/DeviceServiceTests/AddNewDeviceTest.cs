@@ -14,12 +14,14 @@ namespace Sep4Test.DeviceServiceTests
     {
         private IDeviceService _deviceService;
         private Mock<IDeviceRepository> _deviceRepository;
+        private Mock<IRoomService> _roomService;
 
         [SetUp]
         public void SetUp()
         {
             _deviceRepository = new Mock<IDeviceRepository>();
-            _deviceService = new DeviceService(_deviceRepository.Object);
+            _roomService = new Mock<IRoomService>();
+            _deviceService = new DeviceService(_deviceRepository.Object, _roomService.Object);
         }
 
 
@@ -37,17 +39,17 @@ namespace Sep4Test.DeviceServiceTests
             ClimateDevice deviceNull = null;
 
             _deviceRepository.Setup<ClimateDevice>(x =>
-                x.GetDeviceById(climateDevice.ClimateDeviceId).Result).Returns(deviceNull);
+                x.GetDeviceByIdAsync(climateDevice.ClimateDeviceId).Result).Returns(deviceNull);
            // _deviceService.AddNewDevice(climateDevice);
           
-            Assert.DoesNotThrowAsync(async () => await _deviceService.AddNewDevice(climateDevice));
-            _deviceRepository.Verify(service => service.AddNewDevice(It.IsAny<ClimateDevice>()), Times.Once);
+            Assert.DoesNotThrowAsync(async () => await _deviceService.AddNewDeviceAsync(climateDevice));
+            _deviceRepository.Verify(service => service.AddNewDeviceAsync(It.IsAny<ClimateDevice>()), Times.Once);
         }
 
         [Test]
         public void AddNewDevice_NullArgument_Throws()
         {
-            Assert.ThrowsAsync<ArgumentNullException>(async () => await _deviceService.AddNewDevice(null));
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await _deviceService.AddNewDeviceAsync(null));
         }
 
 
@@ -64,11 +66,11 @@ namespace Sep4Test.DeviceServiceTests
             };
 
             _deviceRepository.Setup<ClimateDevice>(x =>
-                x.GetDeviceById(climateDevice.ClimateDeviceId).Result).Returns(climateDevice);
+                x.GetDeviceByIdAsync(climateDevice.ClimateDeviceId).Result).Returns(climateDevice);
 
 
             Assert.ThrowsAsync<DeviceAlreadyExistsException>(async () =>
-                await _deviceService.AddNewDevice(climateDevice));
+                await _deviceService.AddNewDeviceAsync(climateDevice));
         }
     }
 }

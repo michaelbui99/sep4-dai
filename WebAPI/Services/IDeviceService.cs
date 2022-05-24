@@ -6,7 +6,9 @@ namespace WebAPI.Services
 {
     public interface IDeviceService
     {
-        Task<ClimateDevice> GetDeviceById(String deviceId);
-        Task AddNewDevice(ClimateDevice device);
+        Task<IDictionary<string, string>> GetRoomNamesForDevices();
+        Task<IEnumerable<ClimateDevice>> GetAllDevicesAsync();
+        Task<ClimateDevice> GetDeviceByIdAsync(String deviceId);
+        Task AddNewDeviceAsync(ClimateDevice device);
     }
 }
