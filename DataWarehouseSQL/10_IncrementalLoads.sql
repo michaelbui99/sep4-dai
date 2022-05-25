@@ -312,11 +312,9 @@ SET @NewLoadDate = CONVERT(char(8), GETDATE(), 112)
 --Declare FutureDate variable which is set to a distant future
 DECLARE @FutureDate int
 set @FutureDate = 99990101
-DECLARE @UpdatedTable varchar
-SET @UpdatedTable = 'FactMeasurement'
 SET @LastLoadDate = (SELECT MAX([LastLoadDate])
                      from etl.LogUpdate
-                     where TableName = @UpdatedTable)
+                     where TableName = 'FactMeasurement')
 
 insert into [edw].[FactMeasurement]
       ([R_ID]
@@ -344,6 +342,6 @@ AND ds.validTo='99990101'
 AND dr.validTo='99990101'
 
 
-INSERT INTO etl.LogUpdate(TableName, LastLoadDate) VALUES (@UpdatedTable, @NewLoadDate)
+INSERT INTO etl.LogUpdate(TableName, LastLoadDate) VALUES ('FactMeasurement', @NewLoadDate)
 go
 
