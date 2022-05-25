@@ -26,7 +26,7 @@ CREATE TABLE edw.DimRoom
 (
 	R_Id INT IDENTITY PRIMARY KEY NOT NULL,
 	RoomId   INT NOT NULL,
-    RoomName NVARCHAR(6)
+    RoomName NVARCHAR(7)
 );
 
 
