@@ -147,5 +147,47 @@ namespace WebAPI.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<GetAllRoomsDTO>>> GetAllRooms()
+        {
+            try
+            {
+               
+                var allRoms = await roomService.GetAllRoomsAsync();
+                var roomsToReturn = new List<GetAllRoomsDTO>();
+                foreach (var room in allRoms)
+                {
+                    var newRoom = new GetAllRoomsDTO()
+                    {
+                        RoomName = room.RoomName,
+                    };
+                    roomsToReturn.Add(newRoom);
+                }
+                return Ok(roomsToReturn);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddNewRoom([FromBody] NewRoomDTO newRoom)
+        {
+            try
+            {
+                await roomService.CreateNewRoomAsync(newRoom.RoomName);
+                return Ok();
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }
