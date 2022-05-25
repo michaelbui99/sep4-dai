@@ -68,4 +68,3 @@ SELECT r.[RoomId]
   FROM [sep4_source].[dbo].[Measurements] m join [sep4_source].[dbo].[Devices] d on m.ClimateDeviceId = d.ClimateDeviceId
   join [sep4_source].[dbo].[Rooms] r on d.RoomId = r.RoomId join [sep4_source].[dbo].[Settings] s on d.SettingsSettingId = s.SettingId
   WHERE convert(int, convert(varchar, m.[Timestamp], 112), 112) >= @LastLoadDate -- Only new measurement entries will be extracted from source into stage. 
-
