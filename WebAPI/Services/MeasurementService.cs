@@ -45,14 +45,11 @@ namespace WebAPI.Services
                 {
                     Console.WriteLine("miaw");
                     await _deviceService.AddNewDeviceAsync(new ClimateDevice() {ClimateDeviceId = deviceId});
-                    var measurementsWithoutDuplicates = await RemoveDuplicates(deviceId, measurements);
-                    await _measurementRepository.AddMeasurements(deviceId, measurementsWithoutDuplicates);
-                    return;
+                    await _measurementRepository.AddMeasurements(deviceId, measurements);
                 }
                 catch (DeviceAlreadyExistsException e1)
                 {
                     Console.WriteLine(e1);
-                    return;
                 }
             }
             catch (Exception e)
