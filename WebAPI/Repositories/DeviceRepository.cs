@@ -30,7 +30,7 @@ namespace WebAPI.Repositories
             return await _appDbContext.Devices?.Include
                 (device => device.Actuators).Include(
                 device => device.Sensors).Include(device => device.Measurements).Include(
-                device => device.Settings).FirstOrDefaultAsync(device => device.ClimateDeviceId == deviceId);
+                device => device.Settings).FirstOrDefaultAsync(device => device.ClimateDeviceId.ToLower() == deviceId.ToLower());
         }
 
         public async Task AddNewDeviceAsync(ClimateDevice device)
@@ -44,7 +44,7 @@ namespace WebAPI.Repositories
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@ClimateDeviceId", device.ClimateDeviceId);
+                    command.Parameters.AddWithValue("@ClimateDeviceId", device.ClimateDeviceId.ToLower());
                     command.Parameters.AddWithValue("@SettingsId", 0);
                     command.Parameters.AddWithValue("@RoomId", 0);
 
