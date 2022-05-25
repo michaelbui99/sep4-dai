@@ -14,7 +14,7 @@ ALTER TABLE stage.DimClimateDevice
 CREATE TABLE stage.DimRoom
 (
     RoomId   INT NOT NULL,
-    RoomName NVARCHAR(6)
+    RoomName NVARCHAR(7)
 );
 
 ALTER TABLE stage.DimRoom
