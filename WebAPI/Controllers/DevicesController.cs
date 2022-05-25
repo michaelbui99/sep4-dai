@@ -29,6 +29,7 @@ namespace WebAPI.Controllers
             {
                 var roomNameMapping = await _deviceService.GetRoomNamesForDevices();
                 var devicesToReturn = new List<GetAllDevicesDTO>();
+                
                 foreach (var climateDevice in await _deviceService.GetAllDevicesAsync())
                 {
                     var deviceDTO = new GetAllDevicesDTO()
