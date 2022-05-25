@@ -9,7 +9,6 @@ using WebAPI.Persistence;
 
 namespace WebAPI.Repositories
 {
-
     public class MeasurementRepository : IMeasurementRepository
     {
         private readonly AppDbContext _dbContext;
@@ -51,21 +50,28 @@ namespace WebAPI.Repositories
             return room.ClimateDevices
                 .SelectMany(device => device.Measurements).ToList();
         }
-        
+
         public async Task AddMeasurements(string deviceId, IEnumerable<Measurement> measurements)
         {
             using (SqlConnection connection =
-                   new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironment()))
+                new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironment()))
             {
                 var query =
+                    "IF NOT EXISTS (SELECT * FROM dbo.Measurements where [Timestamp] = @timestamp_formatted AND ClimateDeviceId = @deviceId) " +
                     "INSERT INTO dbo.Measurements(Timestamp, Temperature, Humidity, Co2, ClimateDeviceId) " +
-                    "VALUES (@timestamp,@temperature,@humidity,@co2,@deviceId)";
+                    "VALUES (@timestamp,@temperature,@humidity,@co2,@deviceId) ";
+
                 connection.Open();
+
                 foreach (var measurement in measurements)
                 {
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        var formattedTimestamp =
+                            $"{measurement.Timestamp.Year}-{measurement.Timestamp.Month}-{measurement.Timestamp.Day} {measurement.Timestamp.TimeOfDay}";
+                        Console.WriteLine(formattedTimestamp);
                         command.Parameters.AddWithValue("@timestamp", measurement.Timestamp);
+                        command.Parameters.AddWithValue("@timestamp_formatted", formattedTimestamp);
                         command.Parameters.AddWithValue("@temperature", measurement.Temperature);
                         command.Parameters.AddWithValue("@humidity", measurement.Humidity);
                         command.Parameters.AddWithValue("@co2", measurement.Co2);
@@ -79,6 +85,7 @@ namespace WebAPI.Repositories
                         }
                     }
                 }
+
                 connection.Close();
             }
         }
