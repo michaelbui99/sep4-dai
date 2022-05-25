@@ -147,5 +147,23 @@ namespace WebAPI.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult> AddNewRoom([FromBody] NewRoomDTO newRoom)
+        {
+            try
+            {
+                await roomService.CreateNewRoomAsync(newRoom.RoomName);
+                return Ok();
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

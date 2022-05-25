@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,27 @@ namespace WebAPI.Services
     {
         private readonly IRoomRepository _roomRepository;
         private readonly IMeasurementRepository _measurementRepository;
+        private static readonly string ROOM_NAME_FORMAT = @"[A-Z][0-9][0-9]_[0-9][0-9][a-z]?$";
 
         public RoomService(IRoomRepository roomRepository, IMeasurementRepository measurementRepository)
         {
             _roomRepository = roomRepository;
             _measurementRepository = measurementRepository;
+        }
+
+        public async Task CreateNewRoomAsync(string rName)
+        {
+            if (await RoomExists(rName))
+            {
+                throw new ArgumentException($"Room with the name: {rName} already in the system");
+            }
+
+            if (string.IsNullOrEmpty(rName) || string.IsNullOrWhiteSpace(rName) || !Regex.IsMatch(rName, ROOM_NAME_FORMAT))
+            {
+                throw new ArgumentException("Invalid Room name");
+            }
+
+            await _roomRepository.CreateNewRoomAsync(rName);
         }
 
         public async Task<IEnumerable<Room>> GetAllRoomsAsync()

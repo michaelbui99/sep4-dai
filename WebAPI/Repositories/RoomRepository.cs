@@ -19,6 +19,25 @@ namespace WebAPI.Repositories
             _appDbContext = appDbContext;
         }
 
+        public async Task CreateNewRoomAsync(string rName)
+        {
+            var roomToAdd = new Room()
+            {
+                RoomName = rName,
+                ClimateDevices = new List<ClimateDevice>(),
+                //Def settings
+                Settings = new Settings()
+                {
+                    Co2Threshold = 900,
+                    TargetTemperature = 20,
+                    HumidityThreshold = 30,
+                    TemperatureMargin = 3
+                }
+            };
+            await _appDbContext.Rooms.AddAsync(roomToAdd);
+            await _appDbContext.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<Room?>> GetAllRoomsAsync()
         {
             return await _appDbContext.Rooms?.Include(roomSettings => roomSettings.Settings)
