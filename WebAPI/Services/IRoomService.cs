@@ -75,7 +75,12 @@ namespace WebAPI.Services
         /// <exception cref="ArgumentException">On invalid parameters</exception>
         /// <returns></returns>
         Task UpdateRoomDevicesAsync(string roomName, string deviceId);
-
+        /// <summary>
+        /// Add new Settings to a room
+        /// </summary>
+        /// <param name="roomName">The name of the targeted room</param>
+        /// <param name="settings">The new Settings</param>
+        /// <returns></returns>
         Task SetSettingsAsync(string roomName, Settings settings);
     }
 }
