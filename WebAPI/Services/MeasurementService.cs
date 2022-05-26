@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Exceptions;
@@ -34,6 +36,8 @@ namespace WebAPI.Services
             try
             {
                 await _deviceService.GetDeviceByIdAsync(deviceId);
+                var measurementsWithoutDuplicates = await RemoveDuplicates(deviceId, measurements);
+                await _measurementRepository.AddMeasurements(deviceId, measurementsWithoutDuplicates);
             }
             catch (ArgumentException e)
             {
@@ -42,7 +46,6 @@ namespace WebAPI.Services
                     Console.WriteLine("miaw");
                     await _deviceService.AddNewDeviceAsync(new ClimateDevice() {ClimateDeviceId = deviceId});
                     await _measurementRepository.AddMeasurements(deviceId, measurements);
-                    return;
                 }
                 catch (DeviceAlreadyExistsException e1)
                 {
@@ -55,7 +58,32 @@ namespace WebAPI.Services
                 throw;
             }
 
-            await _measurementRepository.AddMeasurements(deviceId, measurements);
+            // await _measurementRepository.AddMeasurements(deviceId, measurements);
+        }
+
+        private async Task<IEnumerable<Measurement>> RemoveDuplicates(string deviceId,
+            IEnumerable<Measurement> measurements)
+        {
+            var device = await _deviceService.GetDeviceByIdAsync(deviceId);
+            var encounteredTimestamps = new Dictionary<string, string>();
+            var measurementsToAdd = new List<Measurement>();
+
+            foreach (var deviceMeasurement in device.Measurements)
+            {
+                encounteredTimestamps[deviceMeasurement.Timestamp.ToString()] = deviceMeasurement.Timestamp.ToString();
+            }
+
+            foreach (var newMeasurement in measurements)
+            {
+                if (encounteredTimestamps.ContainsKey(newMeasurement.Timestamp.ToString()))
+                {
+                    continue;
+                }
+
+                measurementsToAdd.Add(newMeasurement);
+            }
+
+            return measurementsToAdd;
         }
     }
 }

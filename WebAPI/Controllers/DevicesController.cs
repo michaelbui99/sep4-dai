@@ -1,5 +1,9 @@
-﻿using Domain;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WebAPI.DTO;
 using WebAPI.Services;
 
@@ -25,6 +29,7 @@ namespace WebAPI.Controllers
             {
                 var roomNameMapping = await _deviceService.GetRoomNamesForDevices();
                 var devicesToReturn = new List<GetAllDevicesDTO>();
+                
                 foreach (var climateDevice in await _deviceService.GetAllDevicesAsync())
                 {
                     var deviceDTO = new GetAllDevicesDTO()

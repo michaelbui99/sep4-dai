@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Exceptions;
@@ -74,5 +76,6 @@ namespace WebAPI.Services
                 throw new ArgumentNullException("device can't be null");
             }
         }
+
     }
 }

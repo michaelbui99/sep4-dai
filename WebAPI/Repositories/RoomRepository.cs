@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +18,25 @@ namespace WebAPI.Repositories
         public RoomRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
+        }
+
+        public async Task CreateNewRoomAsync(string rName)
+        {
+            var roomToAdd = new Room()
+            {
+                RoomName = rName,
+                ClimateDevices = new List<ClimateDevice>(),
+                //Def settings
+                Settings = new Settings()
+                {
+                    Co2Threshold = 900,
+                    TargetTemperature = 20,
+                    HumidityThreshold = 30,
+                    TemperatureMargin = 3
+                }
+            };
+            await _appDbContext.Rooms.AddAsync(roomToAdd);
+            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Room?>> GetAllRoomsAsync()
