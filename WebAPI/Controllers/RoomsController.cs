@@ -66,11 +66,18 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{roomName}/settings")]
-        public async Task<ActionResult> SetSettingsAsync([FromRoute] string roomName, [FromBody] Settings settings)
+        public async Task<ActionResult> SetSettings([FromRoute] string roomName, [FromBody] SetSettingsDTO settings)
         {
             try
             {
-                await roomService.SetSettingsAsync(roomName, settings);
+                var newSettings = new Settings()
+                {
+                    Co2Threshold = settings.Co2Threshold,
+                    HumidityThreshold = settings.HumidityThreshold,
+                    TargetTemperature = settings.TargetTemperature,
+                    TemperatureMargin = settings.TemperatureMargin
+                };
+                await roomService.SetSettingsAsync(roomName, newSettings);
                 return Ok();
 
             }
