@@ -20,5 +20,7 @@ namespace WebAPI.Services
         Task<Room> GetRoomByNameAsync(string name);
         
         Task UpdateRoomDevicesAsync(string roomName, string deviceId);
+
+        Task SetSettingsAsync(string roomName, Settings settings);
     }
 }

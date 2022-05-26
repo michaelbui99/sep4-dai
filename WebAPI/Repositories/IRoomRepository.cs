@@ -13,7 +13,9 @@ namespace WebAPI.Repositories
             long? validToUnixSeconds, string roomName);
 
         Task UpdateRoomDevicesAsync(string roomName, string deviceId);
-        
-        
+
+        Task SetSettingsAsync(string roomName, Settings settings);
+
+
     }
 }
