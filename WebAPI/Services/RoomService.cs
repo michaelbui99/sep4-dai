@@ -28,7 +28,7 @@ namespace WebAPI.Services
                 throw new ArgumentException($"Room with the name: {rName} already in the system");
             }
 
-            if (string.IsNullOrEmpty(rName) || string.IsNullOrWhiteSpace(rName) || !Regex.IsMatch(rName, ROOM_NAME_FORMAT))
+            if (!IsValidRoomName(rName) || !Regex.IsMatch(rName, ROOM_NAME_FORMAT))
             {
                 throw new ArgumentException("Invalid Room name");
             }
@@ -69,9 +69,9 @@ namespace WebAPI.Services
                 throw new ArgumentException($"No room with id: {roomName} exists");
             }
             
-            if (String.IsNullOrEmpty(roomName) || String.IsNullOrWhiteSpace(roomName))
+            if (!IsValidRoomName(roomName))
             {
-                throw new ArgumentException("Invalid deviceid provided");
+                throw new ArgumentException($"Room name: {roomName} is invalid");
             }
 
             return await _measurementRepository.GetByRoomNameAsync(roomName);
@@ -81,6 +81,16 @@ namespace WebAPI.Services
         {
             var existingRoom = await _roomRepository.GetRoomByNameAsync(roomName);
 
+            if (!IsValidRoomName(roomName))
+            {
+                throw new ArgumentException($"Room name: {roomName} is invalid");
+            }
+            
+            if (!IsValidDeviceId(deviceId))
+            {
+                throw new ArgumentException($"Device Id: {deviceId} is invalid");
+            }
+            
             if (!(await RoomExists(roomName)))
             {
                 throw new ArgumentException($"No room with id: {roomName} exists");
@@ -99,9 +109,9 @@ namespace WebAPI.Services
             long? validToUnixSeconds, string roomName)
         {
             
-            if (String.IsNullOrEmpty(roomName) || String.IsNullOrWhiteSpace(roomName))
+            if (!IsValidRoomName(roomName))
             {
-                throw new ArgumentException("Invalid deviceid provided");
+                throw new ArgumentException($"Room name: {roomName} is invalid");
             }
             
             if (validFromUnixSeconds == null && validToUnixSeconds != null)
@@ -125,6 +135,11 @@ namespace WebAPI.Services
 
         public async Task<Room> GetRoomByNameAsync(string name)
         {
+            if (!IsValidRoomName(name))
+            {
+                throw new ArgumentException($"Room name: {name} is invalid");
+            }
+            
             if (!await RoomExists(name))
             {
                 throw new ArgumentException($"No room with this name exists: {name}");
@@ -135,6 +150,16 @@ namespace WebAPI.Services
 
         public async Task UpdateRoomDevicesAsync(string roomName, string deviceId)
         {
+            if (!IsValidRoomName(roomName))
+            {
+                throw new ArgumentException($"Room name: {roomName} is invalid");
+            }
+            
+            if (!IsValidDeviceId(deviceId))
+            {
+                throw new ArgumentException($"Device Id: {deviceId} is invalid");
+            }
+            
             if (!await RoomExists(roomName))
             {
                 throw new ArgumentException($"No room with this name exists: {roomName}");
@@ -150,9 +175,18 @@ namespace WebAPI.Services
 
         public async Task SetSettingsAsync(string roomName, Settings settings)
         {
+            if (!IsValidRoomName(roomName))
+            {
+                throw new ArgumentException($"Room name: {roomName} is invalid");
+            }
             if (!await RoomExists(roomName))
             {
                 throw new ArgumentException($"No room with this name exists: {roomName}");
+            }
+
+            if (!IsValidSettings(settings))
+            {
+                throw new ArgumentException("Invalid Settings, might be null or one of the attributes is < 0");
             }
 
             await _roomRepository.SetSettingsAsync(roomName, settings);
@@ -180,23 +214,28 @@ namespace WebAPI.Services
         private async Task<bool> RoomExists(int roomId)
         {
             var existingRoom = await _roomRepository.GetRoomByIdAsync(roomId);
-            if (existingRoom == null)
-            {
-                return false;
-            }
-
-            return true;
+            return existingRoom != null;
         }
 
         private async Task<bool> RoomExists(string roomName)
         {
             var existingRoom = await _roomRepository.GetRoomByNameAsync(roomName);
-            if (existingRoom == null)
-            {
-                return false;
-            }
+            return existingRoom != null;
+        }
+        
+        private bool IsValidRoomName(string roomName)
+        {
+            return !string.IsNullOrEmpty(roomName) && !string.IsNullOrWhiteSpace(roomName);
+        }
+        
+        private bool IsValidDeviceId(string deviceId)
+        {
+            return !string.IsNullOrEmpty(deviceId) && !string.IsNullOrWhiteSpace(deviceId);
+        }
 
-            return true;
+        private bool IsValidSettings(Settings settings)
+        {
+            return settings is {Co2Threshold: > 0, HumidityThreshold: > 0, TargetTemperature: > 0, TemperatureMargin: > 0};
         }
     }
 }
