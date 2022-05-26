@@ -11,5 +11,7 @@ namespace WebAPI.Repositories
         Task<ClimateDevice> GetDeviceByIdAsync(String deviceId);
         Task AddNewDeviceAsync(ClimateDevice device);
         
+        
+        
     }
 }
