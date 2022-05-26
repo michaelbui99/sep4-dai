@@ -13,7 +13,9 @@ namespace WebAPI.Repositories
         Task<IDictionary<string, IList<Measurement?>>> GetRoomMeasurementsBetweenAsync(long? validFromUnixSeconds,
             long? validToUnixSeconds, string roomName);
         Task UpdateRoomDevicesAsync(string roomName, string deviceId);
-        
-        
+
+        Task SetSettingsAsync(string roomName, Settings settings);
+
+
     }
 }

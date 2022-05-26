@@ -47,5 +47,32 @@ namespace WebAPI.Controllers
                 return StatusCode(500);
             }
         }
+
+
+        [HttpGet("{deviceId}/settings")]
+        public async Task<ActionResult<GetDeviceSettingDTO>> GetDeviceSettings(string deviceId)
+        {
+            try
+            {
+                var settings = await _deviceService.GetDeviceByIdAsync(deviceId);
+                var settingsToReturn = new GetDeviceSettingDTO()
+                {
+                    Co2Threshold = settings.Settings.Co2Threshold,
+                    HumidityThreshold = settings.Settings.HumidityThreshold,
+                    TargetTemperature = settings.Settings.TargetTemperature,
+                    TemperatureMargin = settings.Settings.TemperatureMargin
+                };
+                return Ok(settingsToReturn);
+
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
