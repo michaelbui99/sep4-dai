@@ -10,5 +10,6 @@ namespace WebAPI.Repositories
         Task<IEnumerable<ClimateDevice>> GetAllDevicesAsync();
         Task<ClimateDevice> GetDeviceByIdAsync(String deviceId);
         Task AddNewDeviceAsync(ClimateDevice device);
+        
     }
 }

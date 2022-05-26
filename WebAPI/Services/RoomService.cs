@@ -148,6 +148,16 @@ namespace WebAPI.Services
             await _roomRepository.UpdateRoomDevicesAsync(roomName, deviceId);
         }
 
+        public async Task SetSettingsAsync(string roomName, Settings settings)
+        {
+            if (!await RoomExists(roomName))
+            {
+                throw new ArgumentException($"No room with this name exists: {roomName}");
+            }
+
+            await _roomRepository.SetSettingsAsync(roomName, settings);
+        }
+
         private bool ClimateDeviceExists(Room room, string deviceId)
         {
             return room.ClimateDevices.Any(roomClimateDevice => roomClimateDevice.ClimateDeviceId == deviceId);

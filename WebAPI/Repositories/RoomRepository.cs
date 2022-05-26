@@ -155,6 +155,19 @@ namespace WebAPI.Repositories
             }
         }
 
+        public async Task SetSettingsAsync(string roomName, Settings settings)
+        {
+            var room = await GetRoomByNameAsync(roomName);
+            room.Settings = settings;
+            
+            foreach (var roomClimateDevice in room.ClimateDevices)
+            {
+                roomClimateDevice.Settings = settings;
+            }
+
+            await _appDbContext.SaveChangesAsync();
+        }
+
         private async Task UpdateDeviceSetting(string roomName, string deviceId)
         {
             using (var connection =

@@ -65,6 +65,25 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpPut("{roomName}/settings")]
+        public async Task<ActionResult> SetSettingsAsync([FromRoute] string roomName, [FromBody] Settings settings)
+        {
+            try
+            {
+                await roomService.SetSettingsAsync(roomName, settings);
+                return Ok();
+
+            }
+            catch (ArgumentException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500);
+            }
+        }
 
         [HttpGet("{roomName}/measurements")]
         public async Task<ActionResult<IEnumerable<ReadDeviceMeasurementsDTO>>> GetMeasurementByRoomName(
