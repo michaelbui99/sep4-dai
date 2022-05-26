@@ -21,6 +21,15 @@ namespace WebAPI.Controllers
             _deviceService = deviceService;
             _logger = logger;
         }
+        
+      
+        /// <summary>
+        /// Method to get all the devices from the service and expose them as an end point
+        /// through a http get request.
+        /// </summary>
+        /// <exception>if anything goes wrong return status code 500</exception>
+        /// <returns>if ok return a list with all the devices</returns>
+        
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetAllDevicesDTO>>> GetAllDevices()
@@ -47,7 +56,16 @@ namespace WebAPI.Controllers
                 return StatusCode(500);
             }
         }
+        
 
+        /// <summary>
+        /// Method to get all the settings for one device from the service and expose them
+        /// as an end point through a http get request.
+        /// </summary>
+        /// <param name="deviceId"></param>
+        /// <exception>if the device id it does not have valid input return bad request exception</exception>
+        /// <exception>if anything went wrong return status code 500</exception>
+        /// <returns>if ok return all the settings for a device</returns>
 
         [HttpGet("{deviceId}/settings")]
         public async Task<ActionResult<GetDeviceSettingDTO>> GetDeviceSettings(string deviceId)

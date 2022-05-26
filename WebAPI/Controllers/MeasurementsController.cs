@@ -24,6 +24,15 @@ namespace WebAPI.Controllers
             _measurementService = measurementService;
             _logger = logger;
         }
+        
+        /// <summary>
+        /// Method to add measurements from the post request body,
+        /// convert it and added to the internal storage.
+        /// </summary>
+        /// <exception>if anything went wrong return status code 500</exception>
+        /// <exception>if the measurement is not properly formatted return bad request</exception>
+        /// <param name="measurements"></param>
+        /// <returns>ok meaning that the measurement was added</returns>
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Measurement>>> AddMeasurements(
