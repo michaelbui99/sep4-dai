@@ -22,27 +22,6 @@ namespace WebAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Domain.Actuator", b =>
-                {
-                    b.Property<int>("ActuatorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActuatorId"), 1L, 1);
-
-                    b.Property<string>("ClimateDeviceId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ActuatorId");
-
-                    b.HasIndex("ClimateDeviceId");
-
-                    b.ToTable("Actuator");
-                });
-
             modelBuilder.Entity("Domain.ClimateDevice", b =>
                 {
                     b.Property<string>("ClimateDeviceId")
@@ -117,24 +96,6 @@ namespace WebAPI.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("Domain.Sensor", b =>
-                {
-                    b.Property<int>("SensorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SensorId"), 1L, 1);
-
-                    b.Property<string>("ClimateDeviceId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("SensorId");
-
-                    b.HasIndex("ClimateDeviceId");
-
-                    b.ToTable("Sensor");
-                });
-
             modelBuilder.Entity("Domain.Settings", b =>
                 {
                     b.Property<int>("SettingId")
@@ -158,30 +119,6 @@ namespace WebAPI.Migrations
                     b.HasKey("SettingId");
 
                     b.ToTable("Settings");
-                });
-
-            modelBuilder.Entity("Domain.User", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Domain.Actuator", b =>
-                {
-                    b.HasOne("Domain.ClimateDevice", null)
-                        .WithMany("Actuators")
-                        .HasForeignKey("ClimateDeviceId");
                 });
 
             modelBuilder.Entity("Domain.ClimateDevice", b =>
@@ -213,20 +150,9 @@ namespace WebAPI.Migrations
                     b.Navigation("Settings");
                 });
 
-            modelBuilder.Entity("Domain.Sensor", b =>
-                {
-                    b.HasOne("Domain.ClimateDevice", null)
-                        .WithMany("Sensors")
-                        .HasForeignKey("ClimateDeviceId");
-                });
-
             modelBuilder.Entity("Domain.ClimateDevice", b =>
                 {
-                    b.Navigation("Actuators");
-
                     b.Navigation("Measurements");
-
-                    b.Navigation("Sensors");
                 });
 
             modelBuilder.Entity("Domain.Room", b =>

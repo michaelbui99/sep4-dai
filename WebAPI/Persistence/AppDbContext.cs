@@ -7,7 +7,6 @@ namespace WebAPI.Persistence
     public class AppDbContext : DbContext
     {
         public DbSet<Room>? Rooms { get; set; }
-        public DbSet<User>? Users { get; set; }
         public DbSet<Measurement>? Measurements { get; set; }
         public DbSet<ClimateDevice>? Devices { get; set; }
 

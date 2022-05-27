@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Domain;
+﻿using Domain;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Persistence;
@@ -10,7 +7,7 @@ namespace WebAPI.Repositories
 {
     public class DeviceRepository : IDeviceRepository
     {
-        private AppDbContext _appDbContext;
+        private readonly AppDbContext _appDbContext;
 
         public DeviceRepository(AppDbContext appDbContext)
         {
@@ -19,17 +16,13 @@ namespace WebAPI.Repositories
 
         public async Task<IEnumerable<ClimateDevice>> GetAllDevicesAsync()
         {
-            return await _appDbContext.Devices?.Include
-                (device => device.Actuators).Include(
-                device => device.Sensors).Include(device => device.Measurements).Include(
+            return await _appDbContext.Devices?.Include(device => device.Measurements).Include(
                 device => device.Settings).ToListAsync();
         }
 
         public async Task<ClimateDevice> GetDeviceByIdAsync(string deviceId)
         {
-            return await _appDbContext.Devices?.Include
-                (device => device.Actuators).Include(
-                device => device.Sensors).Include(device => device.Measurements).Include(
+            return await _appDbContext.Devices?.Include(device => device.Measurements).Include(
                 device => device.Settings).FirstOrDefaultAsync(device => device.ClimateDeviceId.ToLower() == deviceId.ToLower());
         }
 

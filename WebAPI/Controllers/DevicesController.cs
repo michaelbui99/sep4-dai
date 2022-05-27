@@ -13,7 +13,7 @@ namespace WebAPI.Controllers
     [Route("api/v1/[controller]")]
     public class DevicesController : ControllerBase
     {
-        private IDeviceService _deviceService;
+        private readonly IDeviceService _deviceService;
         private ILogger _logger;
 
         public DevicesController(IDeviceService deviceService, ILogger<DevicesController> logger)

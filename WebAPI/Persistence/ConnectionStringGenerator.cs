@@ -32,14 +32,4 @@
             $"User ID={username};" +
             $"Password = {password}";
     }
-    
-    
-    public static string GetConnectionStringFromDotEnv()
-    {
-        return
-            $"Data Source= {DotNetEnv.Env.GetString("RDS_HOSTNAME")},{DotNetEnv.Env.GetString("RDS_PORT")};" +
-            $"Initial Catalog= {DotNetEnv.Env.GetString("RDS_DB_NAME")};" +
-            $"User ID={DotNetEnv.Env.GetString("RDS_USERNAME")};" +
-            $"Password = {DotNetEnv.Env.GetString("RDS_PASSWORD")}";
-    }
 }

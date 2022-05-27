@@ -30,10 +30,8 @@ namespace Sep4Test.DeviceServiceTests
         {
             ClimateDevice climateDevice = new ClimateDevice()
             {
-                Actuators = null,
                 ClimateDeviceId = "deviceID",
                 Measurements = null,
-                Sensors = null,
                 Settings = null
             };
             ClimateDevice deviceNull = null;
@@ -58,10 +56,8 @@ namespace Sep4Test.DeviceServiceTests
         {
             ClimateDevice climateDevice = new ClimateDevice()
             {
-                Actuators = null,
                 ClimateDeviceId = "bob1",
                 Measurements = null,
-                Sensors = null,
                 Settings = null
             };
 
