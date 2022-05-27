@@ -1,5 +1,5 @@
 
-use [sep4_dwh]
+use [sep4_dwh_test]
 
 DECLARE @LastLoadDate int
 SET @LastLoadDate = (SELECT MAX([LastLoadDate]) from etl.LogUpdate where TableName = 'FactMeasurement')
@@ -12,7 +12,7 @@ insert into [stage].[DimClimateDevice]
 ([ClimateDeviceId]
 )
 SELECT [ClimateDeviceId]
-  FROM [sep4_source].[dbo].[Devices]
+  FROM [sep4_source_test].[dbo].[Devices]
 
 
   /******  Load to stage Room  ******/
@@ -22,7 +22,7 @@ INSERT INTO [stage].[DimRoom]
 	   [RoomName])
 SELECT [RoomId]
       ,[RoomName]
-  FROM [sep4_source].[dbo].[Rooms]
+  FROM [sep4_source_test].[dbo].[Rooms]
       
  
 
@@ -40,7 +40,7 @@ SELECT [SettingId]
       ,[HumidityThreshold]
       ,[TargetTemperature]
       ,[TemperatureMargin]
-  FROM [sep4_source].[dbo].[Settings]
+  FROM [sep4_source_test].[dbo].[Settings]
 
 
   /****** Load to stage Measurement  ******/
@@ -65,6 +65,6 @@ SELECT r.[RoomId]
 	  ,convert(char(8), [Timestamp], 108) [time]  --Isolating time value from timestamp
 	  ,CONVERT (date, [Timestamp] , 3) --Isolating date value from timestamp
 
-  FROM [sep4_source].[dbo].[Measurements] m join [sep4_source].[dbo].[Devices] d on m.ClimateDeviceId = d.ClimateDeviceId
-  join [sep4_source].[dbo].[Rooms] r on d.RoomId = r.RoomId join [sep4_source].[dbo].[Settings] s on d.SettingsSettingId = s.SettingId
+  FROM [sep4_source_test].[dbo].[Measurements] m join [sep4_source_test].[dbo].[Devices] d on m.ClimateDeviceId = d.ClimateDeviceId
+  join [sep4_source_test].[dbo].[Rooms] r on d.RoomId = r.RoomId join [sep4_source_test].[dbo].[Settings] s on d.SettingsSettingId = s.SettingId
   WHERE convert(int, convert(varchar, m.[Timestamp], 112), 112) >= @LastLoadDate -- Only new measurement entries will be extracted from source into stage. 
