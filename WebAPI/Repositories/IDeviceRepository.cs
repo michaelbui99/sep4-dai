@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Domain;
+﻿using Domain;
 
 namespace WebAPI.Repositories
 {
     public interface IDeviceRepository
     {
         Task<IEnumerable<ClimateDevice>> GetAllDevicesAsync();
-        Task<ClimateDevice> GetDeviceByIdAsync(String deviceId);
+        Task<ClimateDevice> GetDeviceByIdAsync(string deviceId);
         Task AddNewDeviceAsync(ClimateDevice device);
-        
-        
-        
     }
 }

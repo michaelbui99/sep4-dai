@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Domain;
+﻿using Domain;
 using Domain.Exceptions;
 using WebAPI.Repositories;
-using WebAPI.Services;
 
 namespace WebAPI.Services
 {
     public class MeasurementService : IMeasurementService
     {
-        private IMeasurementRepository _measurementRepository;
-        private IDeviceService _deviceService;
+        private readonly IMeasurementRepository _measurementRepository;
+        private readonly IDeviceService _deviceService;
 
         public MeasurementService(IMeasurementRepository measurementRepository, IDeviceService deviceService)
         {
@@ -23,7 +17,7 @@ namespace WebAPI.Services
 
         public async Task AddMeasurements(string deviceId, IEnumerable<Measurement> measurements)
         {
-            if (String.IsNullOrEmpty(deviceId) || String.IsNullOrWhiteSpace(deviceId))
+            if (string.IsNullOrEmpty(deviceId) || string.IsNullOrWhiteSpace(deviceId))
             {
                 throw new ArgumentException("Invalid deviceid provided");
             }
@@ -43,7 +37,6 @@ namespace WebAPI.Services
             {
                 try
                 {
-                    Console.WriteLine("miaw");
                     await _deviceService.AddNewDeviceAsync(new ClimateDevice() {ClimateDeviceId = deviceId});
                     await _measurementRepository.AddMeasurements(deviceId, measurements);
                 }
@@ -57,8 +50,6 @@ namespace WebAPI.Services
                 Console.WriteLine(e);
                 throw;
             }
-
-            // await _measurementRepository.AddMeasurements(deviceId, measurements);
         }
 
         private async Task<IEnumerable<Measurement>> RemoveDuplicates(string deviceId,

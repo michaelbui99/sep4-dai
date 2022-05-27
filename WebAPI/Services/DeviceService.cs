@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Domain;
+﻿using Domain;
 using Domain.Exceptions;
 using WebAPI.Repositories;
-using WebAPI.Services;
 
 namespace WebAPI.Services
 {
     public class DeviceService : IDeviceService
     {
-        private IDeviceRepository _deviceRepository;
-        private IRoomService _roomService;
+        private readonly IDeviceRepository _deviceRepository;
+        private readonly IRoomService _roomService;
 
         public DeviceService(IDeviceRepository deviceRepository, IRoomService roomService)
         {

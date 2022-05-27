@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Domain;
+﻿using Domain;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Persistence;
@@ -13,7 +8,7 @@ namespace WebAPI.Repositories
 {
     public class RoomRepository : IRoomRepository
     {
-        private AppDbContext _appDbContext;
+        private readonly AppDbContext _appDbContext;
 
         public RoomRepository(AppDbContext appDbContext)
         {
@@ -42,8 +37,6 @@ namespace WebAPI.Repositories
         public async Task<IEnumerable<Room?>> GetAllRoomsAsync()
         {
             return await _appDbContext.Rooms?.Include(roomSettings => roomSettings.Settings)
-                .Include(roomMe => roomMe.ClimateDevices).ThenInclude(device => device.Sensors)
-                .Include(room => room.ClimateDevices).ThenInclude(device => device.Actuators)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Measurements)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Settings)
                 .ToListAsync();
@@ -52,8 +45,6 @@ namespace WebAPI.Repositories
         public async Task<Room?> GetRoomByIdAsync(int id)
         {
             return await _appDbContext.Rooms?.Include(roomSettings => roomSettings.Settings)
-                .Include(roomMe => roomMe.ClimateDevices).ThenInclude(device => device.Sensors)
-                .Include(room => room.ClimateDevices).ThenInclude(device => device.Actuators)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Measurements)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Settings)
                 .FirstOrDefaultAsync(room => room.RoomId == id)!;
@@ -62,8 +53,6 @@ namespace WebAPI.Repositories
         public async Task<Room?> GetRoomByNameAsync(string roomName)
         {
             return await _appDbContext.Rooms?.Include(roomSettings => roomSettings.Settings)
-                .Include(roomMe => roomMe.ClimateDevices).ThenInclude(device => device.Sensors)
-                .Include(room => room.ClimateDevices).ThenInclude(device => device.Actuators)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Measurements)
                 .Include(room => room.ClimateDevices).ThenInclude(device => device.Settings)
                 .FirstOrDefaultAsync(room => room.RoomName == roomName);

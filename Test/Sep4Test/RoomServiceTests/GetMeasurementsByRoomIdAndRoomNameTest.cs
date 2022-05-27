@@ -48,7 +48,6 @@ namespace Sep4Test.RoomServiceTests
             _climateDevice = new ClimateDevice()
             {
                 ClimateDeviceId = "Test1",
-                Actuators = null,
                 Measurements = _measurements,
                 Settings = _settings
             };

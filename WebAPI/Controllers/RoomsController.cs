@@ -17,12 +17,12 @@ namespace WebAPI.Controllers
     [Route("api/v1/[controller]")]
     public class RoomsController : ControllerBase
     {
-        private IRoomService roomService;
+        private readonly IRoomService _roomService;
         private readonly ILogger _logger;
 
         public RoomsController(IRoomService roomService, ILogger<RoomsController> logger)
         {
-            this.roomService = roomService;
+            this._roomService = roomService;
             _logger = logger;
         }
 
@@ -40,7 +40,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var measurements = await roomService.GetMeasurementsByRoomIdAsync(roomId);
+                var measurements = await _roomService.GetMeasurementsByRoomIdAsync(roomId);
                 return Ok(measurements);
             }
             catch (ArgumentException e)
@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                await roomService.UpdateRoomDevicesAsync(roomName, deviceId);
+                await _roomService.UpdateRoomDevicesAsync(roomName, deviceId);
                 return Ok();
 
             }
@@ -106,7 +106,7 @@ namespace WebAPI.Controllers
                     TargetTemperature = settings.TargetTemperature,
                     TemperatureMargin = settings.TemperatureMargin
                 };
-                await roomService.SetSettingsAsync(roomName, newSettings);
+                await _roomService.SetSettingsAsync(roomName, newSettings);
                 return Ok();
 
             }
@@ -145,7 +145,7 @@ namespace WebAPI.Controllers
                 if (validFrom != null || validTo != null)
                 {
                     var deviceMeasurementMap =
-                        await roomService.GetRoomMeasurementsBetweenAsync(validFrom, validTo, roomName);
+                        await _roomService.GetRoomMeasurementsBetweenAsync(validFrom, validTo, roomName);
 
                     foreach (var key in deviceMeasurementMap.Keys)
                     {
@@ -160,7 +160,7 @@ namespace WebAPI.Controllers
                 }
                 else
                 {
-                    var room = await roomService.GetRoomByNameAsync(roomName);
+                    var room = await _roomService.GetRoomByNameAsync(roomName);
 
 
                     foreach (var roomClimateDevice in room.ClimateDevices)
@@ -212,7 +212,7 @@ namespace WebAPI.Controllers
             {
                 _logger.LogInformation(
                     $"Received POST Request for /measurements: {JsonSerializer.Serialize(measurements)}");
-                await roomService.AddMeasurementsAsync(measurements.DeviceId, roomName, measurements.Measurements);
+                await _roomService.AddMeasurementsAsync(measurements.DeviceId, roomName, measurements.Measurements);
                 return Ok();
             }
             catch (ArgumentException e)
@@ -240,7 +240,7 @@ namespace WebAPI.Controllers
             try
             {
                
-                var allRoms = await roomService.GetAllRoomsAsync();
+                var allRoms = await _roomService.GetAllRoomsAsync();
                 var roomsToReturn = new List<GetAllRoomsDTO>();
                 foreach (var room in allRoms)
                 {
@@ -271,7 +271,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                await roomService.CreateNewRoomAsync(newRoom.RoomName);
+                await _roomService.CreateNewRoomAsync(newRoom.RoomName);
                 return Ok();
             }
             catch (ArgumentException e)

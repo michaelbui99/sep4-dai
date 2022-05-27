@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Domain;
+﻿using Domain;
 
 namespace WebAPI.Repositories
 {
@@ -45,7 +43,12 @@ namespace WebAPI.Repositories
         /// <param name="deviceId">The Id of the targeted device</param>
         /// <returns></returns>
         Task UpdateRoomDevicesAsync(string roomName, string deviceId);
-
+        /// <summary>
+        /// Set new Setting object to a room 
+        /// </summary>
+        /// <param name="roomName">The name of the targeted room</param>
+        /// <param name="settings">The new Setting object</param>
+        /// <returns></returns>
         Task SetSettingsAsync(string roomName, Settings settings);
 
 

@@ -62,8 +62,6 @@ namespace Sep4Test.MeasurementServiceTests
             {
                 ClimateDeviceId = "testDevice",
                 Measurements = new List<Measurement>(),
-                Sensors = new List<Sensor>(),
-                Actuators = new List<Actuator>()
             };
 
             var testMeasurements = new List<Measurement>()

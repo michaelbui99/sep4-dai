@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace WebAPI.Util
+﻿namespace WebAPI.Util
 {
     public class DateUtil
     {
