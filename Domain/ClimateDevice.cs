@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain
 {
+    [Index(nameof(ClimateDeviceId))]
     public class ClimateDevice
     {
         [Key]
