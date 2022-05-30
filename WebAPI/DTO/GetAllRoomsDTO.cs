@@ -1,8 +1,9 @@
 ﻿using Domain;
 
-namespace WebAPI.DTO;
-
-public class GetAllRoomsDTO
+namespace WebAPI.DTO
 {
-    public string RoomName { get; set; }
+    public class GetAllRoomsDTO
+    {
+        public string RoomName { get; set; }
+    }
 }

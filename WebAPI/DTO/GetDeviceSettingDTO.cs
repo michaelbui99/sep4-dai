@@ -1,12 +1,13 @@
-﻿namespace WebAPI.DTO;
-
-public class GetDeviceSettingDTO
+﻿namespace WebAPI.DTO
 {
-    public int Co2Threshold { get; set; }
-    
-    public int HumidityThreshold { get; set; }
+    public class GetDeviceSettingDTO
+    {
+        public int Co2Threshold { get; set; }
 
-    public float TargetTemperature { get; set; }
+        public int HumidityThreshold { get; set; }
 
-    public int TemperatureMargin { get; set; }
+        public float TargetTemperature { get; set; }
+
+        public int TemperatureMargin { get; set; }
+    }
 }

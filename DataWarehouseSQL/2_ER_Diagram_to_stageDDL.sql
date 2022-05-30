@@ -7,8 +7,6 @@ CREATE TABLE stage.DimClimateDevice
 );
 
 
-ALTER TABLE stage.DimClimateDevice
-    ADD CONSTRAINT PK_DimClimateDevice PRIMARY KEY (ClimateDeviceId);
 
 
 CREATE TABLE stage.DimRoom
@@ -17,8 +15,6 @@ CREATE TABLE stage.DimRoom
     RoomName NVARCHAR(7)
 );
 
-ALTER TABLE stage.DimRoom
-    ADD CONSTRAINT PK_DimRoom PRIMARY KEY (RoomId);
 
 
 CREATE TABLE stage.DimSettings
@@ -30,8 +26,6 @@ CREATE TABLE stage.DimSettings
     CO2Threshold      INT
 );
 
-ALTER TABLE stage.DimSettings
-    ADD CONSTRAINT PK_DimSettings PRIMARY KEY (SettingsId);
 
 
 CREATE TABLE stage.FactMeasurement
@@ -46,8 +40,6 @@ CREATE TABLE stage.FactMeasurement
     Measurement_Date DATE NOT NULL 
 );
 
-ALTER TABLE stage.FactMeasurement
-    ADD CONSTRAINT PK_FactMeasurement PRIMARY KEY (RoomId, SettingsId, ClimateDeviceId, Measurement_Time, Measurement_Date);
 
 
 --ALTER TABLE Stage.FactMeasurement
