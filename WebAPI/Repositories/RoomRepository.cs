@@ -86,7 +86,7 @@ namespace WebAPI.Repositories
                     command.Parameters.AddWithValue("@validFrom", validFrom);
                     command.Parameters.AddWithValue("@validTo", validTo);
                     command.Parameters.AddWithValue("@roomName", roomName);
-
+                    command.CommandTimeout=120;
                     var result = await command.ExecuteReaderAsync();
 
                     if (result.HasRows)
@@ -113,6 +113,7 @@ namespace WebAPI.Repositories
                             deviceMeasurementMap[ClimateDeviceId].Add(measurement);
                         }
                     }
+                    command.Connection.Close();
                 }
 
                 connection.Close();
