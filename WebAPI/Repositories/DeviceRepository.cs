@@ -55,5 +55,11 @@ namespace WebAPI.Repositories
                 await connection.CloseAsync();
             }
         }
+
+        public async Task<IEnumerable<ClimateDevice>> GetAllDevicesExcludingMeasurementsAsync()
+        {
+            return await _appDbContext.Devices?.Include(
+                device => device.Settings).ToListAsync();
+        }
     }
 }

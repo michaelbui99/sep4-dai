@@ -21,7 +21,7 @@ namespace WebAPI.Services
         public async Task<IDictionary<string, string>> GetRoomNamesForDevices()
         {
             var roomNameMapping = new Dictionary<string, string>();
-            var roomList = await _roomService.GetAllRoomsAsync();
+            var roomList = await _roomService.GetAllRoomsExcludingDeviceMeasurementsAsync();
             foreach (var room in roomList)
             {
                 foreach (var roomClimateDevice in room.ClimateDevices)
@@ -75,5 +75,9 @@ namespace WebAPI.Services
             }
         }
 
+        public async Task<IEnumerable<ClimateDevice>> GetAllDevicesExcludingMeasurements()
+        {
+            return await _deviceRepository.GetAllDevicesExcludingMeasurementsAsync();
+        }
     }
 }
