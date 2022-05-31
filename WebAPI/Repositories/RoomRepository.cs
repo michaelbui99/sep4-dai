@@ -168,6 +168,13 @@ namespace WebAPI.Repositories
             await _appDbContext.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Room>> GetAllRoomsExcludingDeviceMeasurementsAsync()
+        {
+            return await _appDbContext.Rooms?.Include(roomSettings => roomSettings.Settings)
+                .Include(room => room.ClimateDevices).ThenInclude(device => device.Settings)
+                .ToListAsync();
+        }
+
         private async Task UpdateDeviceSetting(string roomName, string deviceId)
         {
             using (var connection =
