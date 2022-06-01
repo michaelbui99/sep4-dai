@@ -53,6 +53,6 @@ namespace WebAPI.Repositories
         /// <returns></returns>
         Task SetSettingsAsync(string roomName, Settings settings);
 
-
+        Task<IEnumerable<Room>> GetAllRoomsExcludingDevicesAsync();
     }
 }

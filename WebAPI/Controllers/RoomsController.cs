@@ -240,7 +240,8 @@ namespace WebAPI.Controllers
             try
             {
                
-                var allRoms = await _roomService.GetAllRoomsAsync();
+                // Excluding devices to optimize response time on request
+                var allRoms = await _roomService.GetAllRoomsExcludingDevicesAsync();
                 var roomsToReturn = new List<GetAllRoomsDTO>();
                 foreach (var room in allRoms)
                 {

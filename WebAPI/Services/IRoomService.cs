@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain;
@@ -82,5 +83,7 @@ namespace WebAPI.Services
         /// <param name="settings">The new Settings</param>
         /// <returns></returns>
         Task SetSettingsAsync(string roomName, Settings settings);
+        
+        Task<IEnumerable<Room>> GetAllRoomsExcludingDevicesAsync();
     }
 }
