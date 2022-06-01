@@ -53,6 +53,13 @@ namespace WebAPI.Repositories
         /// <returns></returns>
         Task SetSettingsAsync(string roomName, Settings settings);
 
+        
+        /// <summary>
+        /// Returns all rooms with their Climate Devices. The Climate Devices is excluding their measurement.
+        /// This is can be used as optimization for when the measurements aren't needed
+        /// </summary>
+        /// <returns>List if all rooms with their Climate Devices excluding measurements</returns>
+        Task<IEnumerable<Room>> GetAllRoomsExcludingDeviceMeasurementsAsync();
         Task<IEnumerable<Room>> GetAllRoomsExcludingDevicesAsync();
     }
 }

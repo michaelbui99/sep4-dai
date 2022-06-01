@@ -191,6 +191,11 @@ namespace WebAPI.Services
             await _roomRepository.SetSettingsAsync(roomName, settings);
         }
 
+        public async Task<IEnumerable<Room>> GetAllRoomsExcludingDeviceMeasurementsAsync()
+        {
+            return await _roomRepository.GetAllRoomsExcludingDeviceMeasurementsAsync();
+        }
+
         public async Task<IEnumerable<Room>> GetAllRoomsExcludingDevicesAsync()
         {
             return await _roomRepository.GetAllRoomsExcludingDevicesAsync();

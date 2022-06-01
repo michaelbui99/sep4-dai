@@ -72,6 +72,7 @@ namespace WebAPI.Repositories
             using (var connection =
                    new SqlConnection(ConnectionStringGenerator.GetConnectionStringFromEnvironmentDataWareHouse()))
             {
+                const string connectionSetting = "SET ARITHABORT ON";
                 const string query = "SELECT * FROM edw.FactMeasurement f " +
                                      "JOIN edw.DimDate d ON f.MD_ID = d.D_ID " +
                                      "JOIN edw.DimTime t ON f.MT_ID = t.TimeKey " +
@@ -81,12 +82,17 @@ namespace WebAPI.Repositories
                                      "AND CAST(d.Date AS DATETIME) + CAST(t.TimeAltKey AS DATETIME) <= @validTo " +
                                      "AND r.RoomName = @roomName";
                 connection.Open();
+                await using (var settingCommand = new SqlCommand(connectionSetting, connection))
+                {
+                    settingCommand.ExecuteNonQuery();
+                }
+
                 await using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@validFrom", validFrom);
                     command.Parameters.AddWithValue("@validTo", validTo);
                     command.Parameters.AddWithValue("@roomName", roomName);
-                    command.CommandTimeout=120;
+                    command.CommandTimeout = 120;
                     var result = await command.ExecuteReaderAsync();
 
                     if (result.HasRows)
@@ -109,10 +115,11 @@ namespace WebAPI.Repositories
                                 Humidity = result.GetInt32(7),
                                 Timestamp = dateTime
                             };
-                            
+
                             deviceMeasurementMap[ClimateDeviceId].Add(measurement);
                         }
                     }
+
                     command.Connection.Close();
                 }
 
@@ -136,7 +143,7 @@ namespace WebAPI.Repositories
                     command.Parameters.AddWithValue("@deviceId", deviceId);
 
                     var result = await command.ExecuteNonQueryAsync();
-                    
+
                     if (result < 0)
                     {
                         throw new ArgumentException("Could not update new query");
@@ -152,13 +159,20 @@ namespace WebAPI.Repositories
         {
             var room = await GetRoomByNameAsync(roomName);
             room.Settings = settings;
-            
+
             foreach (var roomClimateDevice in room.ClimateDevices)
             {
                 roomClimateDevice.Settings = settings;
             }
 
             await _appDbContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Room>> GetAllRoomsExcludingDeviceMeasurementsAsync()
+        {
+            return await _appDbContext.Rooms?.Include(roomSettings => roomSettings.Settings)
+                .Include(room => room.ClimateDevices).ThenInclude(device => device.Settings)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Room>> GetAllRoomsExcludingDevicesAsync()
@@ -180,7 +194,7 @@ namespace WebAPI.Repositories
                     command.Parameters.AddWithValue("@deviceId", deviceId);
 
                     var result = await command.ExecuteNonQueryAsync();
-                    
+
                     if (result < 0)
                     {
                         throw new ArgumentException("Could not update new query");
