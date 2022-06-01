@@ -175,6 +175,11 @@ namespace WebAPI.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Room>> GetAllRoomsExcludingDevicesAsync()
+        {
+            return await _appDbContext.Rooms.ToListAsync();
+        }
+
         private async Task UpdateDeviceSetting(string roomName, string deviceId)
         {
             using (var connection =

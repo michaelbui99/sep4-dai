@@ -91,5 +91,7 @@ namespace WebAPI.Services
         /// </summary>
         /// <returns>List if all rooms with their Climate Devices excluding measurements</returns>
         Task<IEnumerable<Room>> GetAllRoomsExcludingDeviceMeasurementsAsync();
+        
+        Task<IEnumerable<Room>> GetAllRoomsExcludingDevicesAsync();
     }
 }
