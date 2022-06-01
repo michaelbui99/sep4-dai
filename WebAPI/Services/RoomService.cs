@@ -191,6 +191,11 @@ namespace WebAPI.Services
             await _roomRepository.SetSettingsAsync(roomName, settings);
         }
 
+        public async Task<IEnumerable<Room>> GetAllRoomsExcludingDeviceMeasurementsAsync()
+        {
+            return await _roomRepository.GetAllRoomsExcludingDeviceMeasurementsAsync();
+        }
+
         private bool ClimateDeviceExists(Room room, string deviceId)
         {
             return room.ClimateDevices.Any(roomClimateDevice => roomClimateDevice.ClimateDeviceId == deviceId);
